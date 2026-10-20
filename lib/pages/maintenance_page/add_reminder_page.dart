@@ -1,5 +1,6 @@
 import 'package:car_tracker/pages/maintenance_page/complete_maintenance.dart';
 import 'package:car_tracker/services/car_manager.dart';
+import 'package:car_tracker/widgets/app_label.dart';
 import 'package:flutter/material.dart';
 import 'package:car_tracker/theme/app_theme.dart';
 import 'package:flutter/services.dart';
@@ -34,6 +35,7 @@ class _AddReminderPageState extends State<AddReminderPage> {
   DateTime? _nextDate;
   bool _updatingNextMileage = false;
   bool _updatingNextDate = false;
+  bool _isRepeating = false;
   @override
   void initState() {
     super.initState();
@@ -48,6 +50,7 @@ class _AddReminderPageState extends State<AddReminderPage> {
       _intervalMileageController.text = reminder['intervalM']?.toString() ?? '';
       _intervalMonthsController.text = reminder['intervalD']?.toString() ?? '';
       _nextDate = _parseDate(reminder['dueD']?.toString());
+      _isRepeating = (reminder['isRepeating'] as int? ?? 0) == 1;
     }
     _currentMileageController.addListener(_recalculateMileage);
     _intervalMileageController.addListener(_recalculateMileage);
@@ -173,7 +176,7 @@ class _AddReminderPageState extends State<AddReminderPage> {
 
   Future<void> _saveReminder() async {
     if (!_formKey.currentState!.validate()) return;
-    if (!_byMileage && _nextDate == null) {
+    if (_isRepeating && !_byMileage && _nextDate == null) {
       _showMessage('Выберите дату следующего ТО');
       return;
     }
@@ -191,16 +194,13 @@ class _AddReminderPageState extends State<AddReminderPage> {
       'title': _titleController.text.trim(),
       'category': _category!.label,
       'reminderType': _byMileage ? 'mileage' : 'date',
-      'dueM': _byMileage ? int.parse(_nextMileageController.text) : null,
-      'dueD': !_byMileage ? formatDate(_nextDate!) : null,
-      'repeatByM': existingReminder?['repeatByM'] ?? 0,
-      'intervalM': _byMileage
-          ? int.tryParse(_intervalMileageController.text)
-          : null,
-      'repeatByD': existingReminder?['repeatByD'] ?? 0,
-      'intervalD': !_byMileage
-          ? int.tryParse(_intervalMonthsController.text)
-          : null,
+      'dueM': _isRepeating && _byMileage ? int.parse(_nextMileageController.text) : null,
+      'dueD': _isRepeating && !_byMileage ? formatDate(_nextDate!) : null,
+      'repeatByM': _isRepeating ? (existingReminder?['repeatByM'] ?? 0) : 0,
+      'intervalM': _isRepeating && _byMileage ? int.tryParse(_intervalMileageController.text) : null,
+      'repeatByD': _isRepeating ? (existingReminder?['repeatByD'] ?? 0) : 0,
+      'intervalD': _isRepeating && !_byMileage ? int.tryParse(_intervalMonthsController.text) : null,
+      'isRepeating': _isRepeating ? 1 : 0
     };
     try {
       if (existingReminder == null) {
@@ -256,7 +256,7 @@ class _AddReminderPageState extends State<AddReminderPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildLabel('Название ТО'),
+                AppLabel(text: 'Название ТО'),
                 AppTextField(
                   controller: _titleController,
                   hint: 'Например: Замена масла',
@@ -268,7 +268,7 @@ class _AddReminderPageState extends State<AddReminderPage> {
                   },
                 ),
                 SizedBox(height: 8),
-                _buildLabel("Категория"),
+                AppLabel(text: "Категория"),
                 AppDropdownField<MaintenanceCategory>(
                   value: _category,
                   hint: "Выберите категорию",
@@ -291,120 +291,143 @@ class _AddReminderPageState extends State<AddReminderPage> {
                   },
                 ),
                 SizedBox(height: 8),
-                _buildLabel("Тип напоминания"),
-                Container(
-                  padding: const EdgeInsets.all(4),
-                  decoration: BoxDecoration(
-                    color: AppTheme.primaryColor.withValues(alpha: 0.08),
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: Row(
-                    children: [
-                      _buildModeButton(
-                        title: 'По пробегу',
-                        selected: _byMileage,
-                        onTap: () {
-                          setState(() {
-                            _byMileage = true;
-                          });
-                        },
-                      ),
-                      const SizedBox(width: 8),
-                      _buildModeButton(
-                        title: 'По дате',
-                        selected: !_byMileage,
-                        onTap: () {
-                          setState(() {
-                            _byMileage = false;
-                          });
-                        },
-                      ),
-                    ],
-                  ),
+                Row(
+                  children: [
+                    Expanded(child: AppLabel(text: "Повторять ТО")),
+                    Switch(
+                      inactiveThumbColor: AppTheme.secondaryColor,
+                      activeThumbColor: AppTheme.backgroundColor,
+                      trackOutlineColor: WidgetStatePropertyAll(AppTheme.primaryColor.withValues(alpha: 0.12)),
+                      activeTrackColor: AppTheme.primaryColor,
+                      inactiveTrackColor: AppTheme.primaryColor.withValues(alpha: 0.04),
+                      trackOutlineWidth: WidgetStatePropertyAll(1),
+                      value: _isRepeating, 
+                      onChanged: (value) {
+                        setState(() {
+                          _isRepeating = value;
+                        });
+                      }
+                    ),
+                  ]
                 ),
-                const SizedBox(height: 8),
-                if (_byMileage) ...[
-                  _buildLabel('Пробег'),
-                  AppTextField(
-                    controller: _currentMileageController,
-                    hint: "Введите текущий пробег",
-                    suffix: 'км',
-                    keyboardType: TextInputType.number,
-                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Введите текущий пробег';
-                      }
-                      return null;
-                    },
+                if (_isRepeating) ...[
+                  AppLabel(text: "Тип напоминания"),
+                  Container(
+                    padding: const EdgeInsets.all(4),
+                    decoration: BoxDecoration(
+                      color: AppTheme.primaryColor.withValues(alpha: 0.08),
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Row(
+                      children: [
+                        _buildModeButton(
+                          title: 'По пробегу',
+                          selected: _byMileage,
+                          onTap: () {
+                            setState(() {
+                              _byMileage = true;
+                            });
+                          },
+                        ),
+                        const SizedBox(width: 8),
+                        _buildModeButton(
+                          title: 'По дате',
+                          selected: !_byMileage,
+                          onTap: () {
+                            setState(() {
+                              _byMileage = false;
+                            });
+                          },
+                        ),
+                      ],
+                    ),
                   ),
                   const SizedBox(height: 8),
-                  _buildLabel("Интервал"),
-                  AppTextField(
-                    controller: _intervalMileageController,
-                    hint: "Например: 10 000",
-                    suffix: "км",
-                    keyboardType: TextInputType.number,
-                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                    validator: (value) {
-                      final interval = int.tryParse(value ?? '');
-                      if (interval == null || interval < 0) {
-                        return 'Введите корректный интервал';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 8),
-                  _buildLabel("Следующий пробег"),
-                  AppTextField(
-                    controller: _nextMileageController,
-                    hint: "Рассчитывается автоматически",
-                    suffix: "км",
-                    keyboardType: TextInputType.number,
-                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                    validator: (value) {
-                      final next = int.tryParse(value ?? '');
-                      final current = int.tryParse(
-                        _currentMileageController.text,
-                      );
-                      if (next == null) {
-                        return 'Введите следущий пробег';
-                      }
-                      if (widget.reminder == null &&
-                          current != null &&
-                          next < current) {
-                        return "Пробег не может быть меньше текущего";
-                      }
-                      return null;
-                    },
-                  ),
-                ] else ...[
-                  _buildLabel('Дата'),
-                  AppDateField(date: _currentDate, onTap: _selectCurrentDate),
-                  const SizedBox(height: 8),
-                  _buildLabel('Интервал'),
-                  AppTextField(
-                    controller: _intervalMonthsController,
-                    hint: "Например: 6",
-                    suffix: 'мес.',
-                    keyboardType: TextInputType.number,
-                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                    validator: (value) {
-                      final months = int.tryParse(value ?? '');
-                      if (months == null || months < 0) {
-                        return 'Введите корректный интервал';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 8),
-                  _buildLabel('Следующая дата'),
-                  AppDateField(
-                    date: _nextDate,
-                    placeholder: "Рассчитывается автоматически",
-                    onTap: _selectNextDate,
-                  ),
+                  if (_byMileage) ...[
+                    AppLabel(text: 'Пробег'),
+                    AppTextField(
+                      controller: _currentMileageController,
+                      hint: "Введите текущий пробег",
+                      suffix: 'км',
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Введите текущий пробег';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 8),
+                    AppLabel(text: "Интервал"),
+                    AppTextField(
+                      controller: _intervalMileageController,
+                      hint: "Например: 10 000",
+                      suffix: "км",
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                      validator: (value) {
+                        final interval = int.tryParse(value ?? '');
+                        if (interval == null || interval < 0) {
+                          return 'Введите корректный интервал';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 8),
+                    AppLabel(text: "Следующий пробег"),
+                    AppTextField(
+                      controller: _nextMileageController,
+                      hint: "Рассчитывается автоматически",
+                      suffix: "км",
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                      validator: (value) {
+                        final next = int.tryParse(value ?? '');
+                        final current = int.tryParse(
+                          _currentMileageController.text,
+                        );
+                        if (next == null) {
+                          return 'Введите следущий пробег';
+                        }
+                        if (widget.reminder == null &&
+                            current != null &&
+                            next < current) {
+                          return "Пробег не может быть меньше текущего";
+                        }
+                        return null;
+                      },
+                    ),
+                  ] else ...[
+                    AppLabel(text: 'Дата'),
+                    AppDateField(date: _currentDate, onTap: _selectCurrentDate),
+                    const SizedBox(height: 8),
+                    AppLabel(text: 'Интервал'),
+                    AppTextField(
+                      controller: _intervalMonthsController,
+                      hint: "Например: 6",
+                      suffix: 'мес.',
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                      validator: (value) {
+                        final months = int.tryParse(value ?? '');
+                        if (months == null || months < 0) {
+                          return 'Введите корректный интервал';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 8),
+                    AppLabel(text:'Следующая дата'),
+                    AppDateField(
+                      date: _nextDate,
+                      placeholder: "Рассчитывается автоматически",
+                      onTap: _selectNextDate,
+                    ),
+                  ],
+                
                 ],
+                
                 const SizedBox(height: 16),
                 widget.reminder != null
                     ? SizedBox(
@@ -469,16 +492,6 @@ class _AddReminderPageState extends State<AddReminderPage> {
             ),
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildLabel(String text) {
-    return Padding(
-      padding: const EdgeInsets.all(8),
-      child: Text(
-        text,
-        style: TextStyle(color: AppTheme.textColor, fontSize: 15),
       ),
     );
   }

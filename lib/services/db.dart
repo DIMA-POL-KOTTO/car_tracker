@@ -19,7 +19,7 @@ class DatabaseService {
     final path = join(databasesPath, 'car_care.db');
     return openDatabase(
       path,
-      version: 2,
+      version: 3,
       onConfigure: (db) async {
         await db.execute('PRAGMA foreign_keys = ON');
       },
@@ -61,6 +61,7 @@ class DatabaseService {
             intervalM INTEGER,
             repeatByD INTEGER NOT NULL DEFAULT 0,
             intervalD INTEGER,
+            isRepeating INTEGER NOT NULL DEFAULT 0,
             FOREIGN KEY (carId) REFERENCES cars(id) ON DELETE CASCADE
           )
         ''');
@@ -89,6 +90,18 @@ class DatabaseService {
             UPDATE fuel_entries
             SET car_id = (SELECT id FROM cars ORDER BY id LIMIT 1)
             WHERE car_id IS NULL
+          ''');
+        }
+
+        if (oldVersion < 3) {
+          await db.execute('''
+            ALTER TABLE maintenance_reminders
+            ADD COLUMN isRepeating INTEGER NOT NULL DEFAULT 0
+          ''');
+          await db.execute('''
+            UPDATE maintenance_reminders
+            SET isRepeating = 1
+            WHERE intervalM IS NOT NULL OR intervalD IS NOT NULL
           ''');
         }
       },
