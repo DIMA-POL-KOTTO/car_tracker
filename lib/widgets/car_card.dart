@@ -16,6 +16,12 @@ class CarCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      margin: EdgeInsets.zero,
+      elevation: 1,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+        side: BorderSide(color: AppTheme.primaryColor.withValues(alpha: 0.12)),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
@@ -63,45 +69,50 @@ class CarCard extends StatelessWidget {
               ),
             ),
           ),
-           Padding(
-            padding: const EdgeInsets.all(16),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children:[
-                Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Пробег',
-                  style: TextStyle(
-                    color: AppTheme.textSecondaryColor,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  '${car.mileage} км',
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: AppTheme.textColor,
-                  ),
-                ),
-              ],
-            ),
-            TextButton(
-              onPressed: () => _showMileageDialog(context),
-              child: Text('Обновить',
-                style: const TextStyle(
-                  color: AppTheme.primaryColor,
-                  fontSize: 14
-                ),
-               
-              ),
-            ),    
-              ],
-            ),
+          const SizedBox(height: 16),
+          Padding(padding: const EdgeInsets.symmetric(
+            horizontal: 16),
+            child: const Divider(height: 1),
           ),
+          Padding(
+          padding: const EdgeInsets.all(16),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children:[
+              Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Пробег',
+                style: TextStyle(
+                  color: AppTheme.textSecondaryColor,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                '${car.mileage} км',
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: AppTheme.textColor,
+                ),
+              ),
+            ],
+          ),
+          TextButton(
+            onPressed: () => _showMileageDialog(context),
+            child: Text('Обновить',
+              style: const TextStyle(
+                color: AppTheme.primaryColor,
+                fontSize: 14
+              ),
+              
+            ),
+          ),    
+            ],
+          ),
+        ),
         ],
       ),
     );

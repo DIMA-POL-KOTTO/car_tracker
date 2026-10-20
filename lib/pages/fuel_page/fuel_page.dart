@@ -22,6 +22,7 @@ class _FuelPageState extends State<FuelPage> {
   final FuelManager _fuelManager = FuelManager.instance;
   bool _isSelectionMode = false;
   final Set<int> _selectedIds = {};
+
   @override
   void initState(){
     super.initState();
@@ -29,15 +30,18 @@ class _FuelPageState extends State<FuelPage> {
     _fuelManager.addListener(_onFuelChanged);
     _fuelManager.init();
   }
+
   @override
   void dispose() {
     _scanManager.removeListener(_onScanChanged);
     _fuelManager.removeListener(_onFuelChanged);
     super.dispose();
   }
+
   void _onScanChanged() {
     setState(() { });
   }
+  
   void _onFuelChanged() {
     setState(() { });
   }

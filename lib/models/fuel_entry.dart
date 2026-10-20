@@ -2,6 +2,7 @@ import 'package:car_tracker/models/fuel_type.dart';
 
 class FuelEntry {
   final int? id; 
+  final int? carId;
   final String station; //АЗС
   final String organization;
   final DateTime date; //дата
@@ -13,6 +14,7 @@ class FuelEntry {
 
   FuelEntry({
     this.id,
+    this.carId,
     required this.station,
     required this.organization,
     required this.date,
@@ -33,11 +35,13 @@ class FuelEntry {
       'price': price,
       'totalCost': totalCost,
       'mileage': mileage,
+      'car_id': carId,
     };
   }
 
   factory FuelEntry.fromDB(Map<String, dynamic> data) {
     return FuelEntry(id: data['id'] as int,
+      carId: data['car_id'] as int?,
       station: data['station'] as String,
       organization: data['organization'] as String, 
       date: DateTime.parse(data['date'] as String), 
@@ -50,6 +54,7 @@ class FuelEntry {
 
   FuelEntry copyWith({
     int? id,
+    int? carId,
     String? station,
     String? organization,
     DateTime? date,
@@ -61,6 +66,7 @@ class FuelEntry {
   }) {
     return FuelEntry(
       id: id ?? this.id,
+      carId: carId ?? this.carId,
       station: station ?? this.station,
       organization: organization ?? this.organization,
       date: date ?? this.date,

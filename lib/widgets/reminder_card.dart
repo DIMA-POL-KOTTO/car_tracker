@@ -7,12 +7,7 @@ class ReminderCard extends StatelessWidget {
   final VoidCallback? onTap;
   final Color? urgencyColor;
 
-  const ReminderCard({
-    super.key,
-    required this.reminder,
-    this.onTap,
-    this.urgencyColor,
-  });
+  const ReminderCard({super.key, required this.reminder, this.onTap, this.urgencyColor});
 
   @override
   Widget build(BuildContext context) {

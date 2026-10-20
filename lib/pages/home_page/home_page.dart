@@ -3,6 +3,7 @@ import 'package:car_tracker/pages/home_page/add_car_page.dart';
 import 'package:car_tracker/services/car_manager.dart';
 import 'package:car_tracker/theme/app_theme.dart';
 import 'package:car_tracker/l10n/app_localizations.dart';
+import 'package:car_tracker/widgets/app_section_heading.dart';
 import 'package:car_tracker/widgets/car_empty_card.dart';
 import 'package:flutter/material.dart';
 import 'package:car_tracker/models/car.dart';
@@ -18,7 +19,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final CarManager _carManager = CarManager.instance;
+  final CarManager _carManager = CarManager.instance; //один на всё приложение
   final FuelManager _fuelManager = FuelManager.instance;
 
   @override
@@ -42,9 +43,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _onFuelChanged() {
-    if (mounted) {
-      setState(() {});
-    }
+    setState(() {});
   }
 
   @override
@@ -60,7 +59,7 @@ class _HomePageState extends State<HomePage> {
         )
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16),
         child: _buildContent(l10n)
       ),
     );
@@ -69,37 +68,26 @@ class _HomePageState extends State<HomePage> {
   Widget _buildContent(AppLocalizations l10n) {
     final List<Widget> children = [];
     if (_carManager.cars.isEmpty) {
-      return EmptyCarCard(onAdd: _addCar);
+      return EmptyCarCard(onAdd: () async { 
+        await Navigator.push(context, MaterialPageRoute(
+          builder: (context) => const AddCarPage()));
+        });
     }
     else {
       Car car = _carManager.cars.first;
-      children.add(CarCard(car: car, l10n: l10n, onDelete: () async {
-        if (car.id == null) {
-          return;
-        }
-        await _carManager.delete(car.id!);
-      }, 
-      onUpdate: () {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => AddCarPage(car: car)));
-      },
-      onUpdateMileage: (mileage) async {
-        if (car.id == null) {
-          return;
-        }
-        await _carManager.updateMileage(car.id!, mileage);
-      },
-      ),
-      );
+      children.add(CarCard(car: car, l10n: l10n, onDelete: () async {await _carManager.delete(car.id!);
+        }, 
+        onUpdate: () {
+          Navigator.push(context, MaterialPageRoute(builder: (context) => AddCarPage(car: car)));
+        },
+        onUpdateMileage: (mileage) async {
+          await _carManager.updateMileage(car.id!, mileage);
+        },
+      ),);
     }
     children.addAll([
       const SizedBox(height: 16,),
-      const Padding(
-      padding: EdgeInsets.fromLTRB(8,0,0,0),
-      child:  Text (
-        'Последняя заправка', 
-        style: TextStyle(color: AppTheme.textColor, fontSize: 20, fontWeight: FontWeight.bold)
-      ),),
-      const SizedBox(height: 8,),
+      AppSectionHeading(title: "Последняя заправка"),
       _buildLastFuel()
     ]);
     return SingleChildScrollView(
@@ -130,10 +118,6 @@ class _HomePageState extends State<HomePage> {
       entry: _fuelManager.entries.first,
       onTap: () {Navigator.push(context, MaterialPageRoute(builder: (context) => FuelForm(entry: _fuelManager.entries.first, isEditing: true,)));},
     );
-  }
-
-  Future<void> _addCar() async {
-    await Navigator.push(context, MaterialPageRoute(builder: (context) => const AddCarPage()));
   }
 }
   

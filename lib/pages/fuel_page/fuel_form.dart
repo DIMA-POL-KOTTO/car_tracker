@@ -4,6 +4,8 @@ import 'package:car_tracker/l10n/app_localizations.dart';
 import 'package:car_tracker/models/fuel_type.dart';
 import 'package:car_tracker/services/models/parsed_receipt.dart';
 import 'package:car_tracker/widgets/app_dropdown_field.dart';
+import 'package:car_tracker/widgets/app_label.dart';
+import 'package:car_tracker/widgets/app_section_heading.dart';
 import 'package:flutter/material.dart';
 import 'package:car_tracker/services/image_picker.dart';
 import 'package:car_tracker/models/fuel_entry.dart';
@@ -75,149 +77,193 @@ class _FuelFormState extends State<FuelForm> {
     return Scaffold(
       appBar: AppBar(
         title: Text(l10n.fuel_form),
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            AppTextField(
-              controller: _organizationController,
-              hint: "Организация",
-            ),
-            SizedBox(height: 16,),
-            AppTextField(
-              controller: _stationController,
-              hint: l10n.fuel_station,
-            ),
-            SizedBox(height: 16,),
-            AppDateField(date: _selectedDate, onTap: () async {
-              final now = DateTime.now();
-                final pickedDate = await showDatePicker(
-                context: context,
-                initialDate: _selectedDate ?? now,
-                firstDate: DateTime(2000),
-                lastDate: now,
-              );
-              if (pickedDate == null || !mounted) return;
-              setState(() {
-                _selectedDate = pickedDate;
-              });
-            }),
-            SizedBox(height: 16,),
-            AppDropdownField<FuelType>(
-              value: _fuelType,
-              hint: l10n.fuel_type,
-              items: FuelType.values.map((type) {
-                return DropdownMenuItem<FuelType>(
-                  value: type,
-                  child: Text(fuelTypeName(type)),
-                );
-              }).toList(),
-              onChanged: (value) {
-                setState(() {
-                  _fuelType = value;
-                });
-              },
-            ),
-           
-            SizedBox(height: 16,),
-            AppTextField(
-              controller: _amountController,
-              keyboardType: const TextInputType.numberWithOptions(
-                decimal: true,
-              ),
-              hint: l10n.fuel_amount,
-              onChanged: (_) {
-                setState(() {});
-              },
-            ),
-            SizedBox(height: 16,),
-            AppTextField(
-              controller: _priceController,
-              keyboardType: const TextInputType.numberWithOptions(
-                decimal: true,
-              ),
-              hint: l10n.fuel_price,
-              onChanged: (_) {
-                setState(() {});
-              },
-            ),
-            SizedBox(height: 16,),
-            AppTextField(
-              controller: _totalCostController,
-              keyboardType: const TextInputType.numberWithOptions(
-                decimal: true,
-              ),
-              hint: l10n.fuel_total_cost,
-              onChanged: (_) {
-                setState(() {});
-              },
-            ),
-
-            _buildTotalCostWarning(),
-
-            const SizedBox(height: 16),
-
-            AppTextField(
-              controller: _mileageController,
-              keyboardType: TextInputType.number,
-              hint: l10n.fuel_mileage,
-            ),
-            SizedBox(height: 16,),
-            Row(
-              children: [
-                Expanded(
-                  child: OutlinedButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    style: ElevatedButton.styleFrom(foregroundColor: AppTheme.primaryColor,
-                      side: const BorderSide(color: AppTheme.primaryColor)),
-                    child: const Text('Отмена'),
-                    
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: ElevatedButton(
-                    
-                    onPressed: _save,
-                    style: ElevatedButton.styleFrom(backgroundColor: AppTheme.primaryColor, foregroundColor: AppTheme.backgroundColor),
-                    child: Text(
-                      widget.isEditing ? 'Сохранить' : 'Добавить',
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ],
+        titleTextStyle: const TextStyle(
+          color: AppTheme.textColor,
+          fontSize: 24,
+          fontWeight: FontWeight.bold
         ),
       ),
-      
-        floatingActionButton: FloatingActionButton(
+      body: SafeArea(
+        child: Padding(
+          padding: EdgeInsets.all(16.0),
+          child: _buildContent(l10n),
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
         backgroundColor: AppTheme.primaryColor,
         foregroundColor: AppTheme.backgroundColor,
         child: const Icon(Icons.camera_alt, size: 31,),
-        onPressed: () async {
-          final image = await ImagePickerService().pickImage(context);
-          if (image == null) {
-            return;
-          }  
-          if (widget.scan != null) {
-            await ScanManager.instance.processScan(widget.scan!, image);
-            if (!mounted) {
-              return;
-            }
-            final result = widget.scan!.result;
-            if (result != null) {
-              _fillFromParsedReceipt(result);
-            }
-          }
-        },
-        
+        onPressed: _scanReceipt
       ),
     );
+  }
+
+  Widget _buildContent(AppLocalizations l10n) {
+    final List<Widget> children = [
+      AppSectionHeading(title: "Информация о заправке"),
+      AppLabel(text: "Организация"),
+      AppTextField(
+        controller: _organizationController,
+        hint: "Например: Белоруснефть",
+      ),
+      AppLabel(text: "Станция"),
+      AppTextField(
+        controller: _stationController,
+        hint: "Например: АЗС №6 г.Гродно",
+      ),
+      AppLabel(text: "Дата заправки"),
+      AppDateField(date: _selectedDate, onTap: _selectDate),
+      const SizedBox(height: 16,),
+      AppSectionHeading(title: "Данные топлива"),
+      AppLabel(text: "Тип топлива"),
+      AppDropdownField<FuelType>(
+        value: _fuelType,
+        hint: l10n.fuel_type,
+        items: FuelType.values.map((type) {
+          return DropdownMenuItem<FuelType>(
+            value: type,
+            child: Text(fuelTypeName(type)),
+          );
+        }).toList(),
+        onChanged: (value) {
+          setState(() {
+            _fuelType = value;
+          });
+        },
+      ),
+      Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                AppLabel(text: "Количество топлива"),
+                AppTextField(
+                  controller: _amountController,
+                  keyboardType: const TextInputType.numberWithOptions(
+                    decimal: true,
+                  ),
+                  hint: l10n.fuel_amount,
+                  onChanged: (_) {
+                    setState(() {});
+                  },
+                  suffix: "л.",
+                ),
+              ]
+            )
+          ),
+          const SizedBox(width: 12,),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                AppLabel(text: "Цена за литр"),
+                AppTextField(
+                  controller: _priceController,
+                  keyboardType: const TextInputType.numberWithOptions(
+                    decimal: true,
+                  ),
+                  hint: l10n.fuel_price,
+                  onChanged: (_) {
+                    setState(() {});
+                  },
+                  suffix: "BYN",
+                ),
+              ],
+            )
+          )
+        ],
+      ),
+
+      AppLabel(text: "Общая стоимость"),
+      AppTextField(
+        controller: _totalCostController,
+        keyboardType: const TextInputType.numberWithOptions(
+          decimal: true,
+        ),
+        hint: l10n.fuel_total_cost,
+        onChanged: (_) {
+          setState(() {});
+        },
+        suffix: "BYN",
+      ),
+
+      _buildTotalCostWarning(),
+      AppLabel(text: "Пробег"),
+      AppTextField(
+        controller: _mileageController,
+        keyboardType: TextInputType.number,
+        hint: l10n.fuel_mileage,
+        suffix: "км",
+      ),
+      SizedBox(height: 16,),
+      Padding(
+        padding: const EdgeInsets.only(right: 72),
+        child: Row(
+          children: [
+            Expanded(
+              child: OutlinedButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                style: ElevatedButton.styleFrom(foregroundColor: AppTheme.primaryColor,
+                  side: const BorderSide(color: AppTheme.primaryColor)),
+                child: const Text('Отмена'),
+                
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: ElevatedButton(
+                
+                onPressed: _save,
+                style: ElevatedButton.styleFrom(backgroundColor: AppTheme.primaryColor, foregroundColor: AppTheme.backgroundColor),
+                child: Text(
+                  widget.isEditing ? 'Сохранить' : 'Добавить',
+                ),
+              ),
+            ),
+          ],
+        ),
+      )
+    ];
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: children
+      )
+    );
+  }
+
+  Future<void> _selectDate() async {
+    final now = DateTime.now();
+    final pickedDate = await showDatePicker(
+      context: context,
+      initialDate: _selectedDate ?? now,
+      firstDate: DateTime(2000),
+      lastDate: now,
+    );
+    if (pickedDate == null || !mounted) return;
+    setState(() {
+      _selectedDate = pickedDate;
+    });
+  }
+
+  Future<void> _scanReceipt() async {
+    final image = await ImagePickerService().pickImage(context);
+    if (image == null) {
+      return;
+    }  
+    if (widget.scan != null) {
+      await ScanManager.instance.processScan(widget.scan!, image);
+      if (!mounted) {
+        return;
+      }
+      final result = widget.scan!.result;
+      if (result != null) {
+        _fillFromParsedReceipt(result);
+      }
+    }
   }
 
   Future<void> _save() async {
@@ -236,8 +282,19 @@ class _FuelFormState extends State<FuelForm> {
       return;
     }
     final carManager = CarManager.instance;
+    await carManager.init();
+    final carId = widget.entry?.carId ??
+        (carManager.cars.isNotEmpty ? carManager.cars.first.id : null);
+    if (carId == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Сначала добавьте автомобиль'),
+          duration: Duration(seconds: 3),
+        ),
+      );
+      return;
+    }
     if (mileage != null) {
-      await carManager.init();
       if (carManager.cars.isNotEmpty) {
         final car = carManager.cars.first;
         if (car.id != null && mileage < car.mileage) {
@@ -269,6 +326,7 @@ class _FuelFormState extends State<FuelForm> {
     if (!mounted) return;
     final updatedEntry = FuelEntry(
       id: widget.entry?.id,
+      carId: carId,
       station: _stationController.text.trim(),
       organization: _organizationController.text.trim(),
       date: _selectedDate!,
