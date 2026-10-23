@@ -103,7 +103,7 @@ class _AddCarPageState extends State<AddCarPage> {
             items: FuelTypeCar.values.map((type) {
               return DropdownMenuItem(
                 value: type,
-                child: Text(fuelTypeCarName(type)),
+                child: Text(fuelTypeCarName(type, l10n)),
               );
             }).toList(),
             onChanged: (value) {

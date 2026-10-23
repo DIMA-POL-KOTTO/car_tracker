@@ -1,3 +1,6 @@
+import 'dart:math';
+
+import 'package:car_tracker/l10n/app_localizations.dart';
 import 'package:car_tracker/services/car_manager.dart';
 import 'package:car_tracker/services/maintenance_service.dart';
 import 'package:car_tracker/theme/app_theme.dart';
@@ -94,9 +97,10 @@ class _CompleteMaintenanceState extends State<CompleteMaintenance> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Выполнение ТО'),
+        title: Text(l10n.completing),
         titleTextStyle: const TextStyle(
           color: AppTheme.textColor,
           fontSize: 24,
@@ -111,34 +115,34 @@ class _CompleteMaintenanceState extends State<CompleteMaintenance> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const AppSectionHeading(
-                  title: 'Выполняемое ТО',
-                  subtitle: 'Проверьте выбранное напоминание',
+                AppSectionHeading(
+                  title: l10n.maintenance_being_performed,
+                  subtitle: l10n.check_the_selected_reminder,
                 ),
                 ReminderCard(reminder: widget.reminder),
                 const SizedBox(height: 28),
-                const AppSectionHeading(title: 'Детали выполнения'),
+                AppSectionHeading(title: l10n.completing_details),
                 const SizedBox(height: 8),
-                const _FieldLabel('Пробег'),
+                _FieldLabel(l10n.fuel_mileage),
                 AppTextField(
                   controller: _mileageController,
-                  hint: 'Введите пробег',
-                  suffix: 'км',
+                  hint: l10n.enter_current_mileage,
+                  suffix: l10n.km,
                   keyboardType: TextInputType.number,
                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   validator: (value) {
                     final mileage = int.tryParse(value ?? '');
                     if (mileage == null || mileage < 0) {
-                      return 'Введите корректный пробег';
+                      return l10n.enter_a_valid_mileage;
                     }
                     return null;
                   },
                 ),
                 const SizedBox(height: 16),
-                const _FieldLabel('Цена'),
+                _FieldLabel(l10n.cost),
                 AppTextField(
                   controller: _priceController,
-                  hint: 'Введите стоимость',
+                  hint: l10n.enter_a_valid_cost,
                   suffix: 'BYN',
                   keyboardType: const TextInputType.numberWithOptions(
                     decimal: true,
@@ -149,16 +153,16 @@ class _CompleteMaintenanceState extends State<CompleteMaintenance> {
                   validator: (value) {
                     final text = value?.trim().replaceAll(',', '.') ?? '';
                     if (text.isNotEmpty && double.tryParse(text) == null) {
-                      return 'Введите корректную стоимость';
+                      return l10n.enter_a_valid_cost;
                     }
                     return null;
                   },
                 ),
                 const SizedBox(height: 16),
-                const _FieldLabel('Комментарий'),
+                _FieldLabel(l10n.comment),
                 AppTextField(
                   controller: _commentController,
-                  hint: 'Добавьте заметку о выполненных работах',
+                  hint: l10n.add_a_note_about_the_work_performed,
                   keyboardType: TextInputType.multiline,
                   minLines: 3,
                   maxLines: 5,
@@ -179,7 +183,7 @@ class _CompleteMaintenanceState extends State<CompleteMaintenance> {
                             ),
                           )
                         : const Icon(Icons.check),
-                    label: Text(_saving ? 'Сохраняем…' : 'Выполнить ТО'),
+                    label: Text(_saving ? l10n.saving : l10n.complete),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.green,
                       foregroundColor: AppTheme.backgroundColor,

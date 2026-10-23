@@ -1,3 +1,4 @@
+import 'package:car_tracker/l10n/app_localizations.dart';
 import 'package:car_tracker/pages/maintenance_page/complete_maintenance.dart';
 import 'package:car_tracker/services/car_manager.dart';
 import 'package:car_tracker/widgets/app_label.dart';
@@ -235,12 +236,13 @@ class _AddReminderPageState extends State<AddReminderPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
         title: Text(
           widget.reminder == null
-              ? 'Новое напоминание'
-              : 'Редактирование напоминания',
+              ? l10n.new_reminder
+              : l10n.editing,
         ),
         titleTextStyle: const TextStyle(
           color: AppTheme.textColor,
@@ -256,22 +258,22 @@ class _AddReminderPageState extends State<AddReminderPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                AppLabel(text: 'Название ТО'),
+                AppLabel(text: l10n.maintenance_name),
                 AppTextField(
                   controller: _titleController,
-                  hint: 'Например: Замена масла',
+                  hint: '${l10n.for_example}: ${l10n.oil_change}',
                   validator: (value) {
                     if (value == null || value.trim().isEmpty) {
-                      return "Введите название ТО";
+                      return l10n.enter_maintenance_name;
                     }
                     return null;
                   },
                 ),
                 SizedBox(height: 8),
-                AppLabel(text: "Категория"),
+                AppLabel(text: l10n.category),
                 AppDropdownField<MaintenanceCategory>(
                   value: _category,
-                  hint: "Выберите категорию",
+                  hint: l10n.enter_categoty,
                   items: _categories.map((category) {
                     return DropdownMenuItem<MaintenanceCategory>(
                       value: category,
@@ -285,7 +287,7 @@ class _AddReminderPageState extends State<AddReminderPage> {
                   },
                   validator: (value) {
                     if (value == null) {
-                      return 'Выберите категорию';
+                      return l10n.enter_categoty;
                     }
                     return null;
                   },
@@ -293,7 +295,7 @@ class _AddReminderPageState extends State<AddReminderPage> {
                 SizedBox(height: 8),
                 Row(
                   children: [
-                    Expanded(child: AppLabel(text: "Повторять ТО")),
+                    Expanded(child: AppLabel(text: l10n.repeate_maintenance)),
                     Switch(
                       inactiveThumbColor: AppTheme.secondaryColor,
                       activeThumbColor: AppTheme.backgroundColor,
@@ -311,7 +313,7 @@ class _AddReminderPageState extends State<AddReminderPage> {
                   ]
                 ),
                 if (_isRepeating) ...[
-                  AppLabel(text: "Тип напоминания"),
+                  AppLabel(text: l10n.reminder_type),
                   Container(
                     padding: const EdgeInsets.all(4),
                     decoration: BoxDecoration(
@@ -321,7 +323,7 @@ class _AddReminderPageState extends State<AddReminderPage> {
                     child: Row(
                       children: [
                         _buildModeButton(
-                          title: 'По пробегу',
+                          title: l10n.by_mileage,
                           selected: _byMileage,
                           onTap: () {
                             setState(() {
@@ -331,7 +333,7 @@ class _AddReminderPageState extends State<AddReminderPage> {
                         ),
                         const SizedBox(width: 8),
                         _buildModeButton(
-                          title: 'По дате',
+                          title: l10n.by_date,
                           selected: !_byMileage,
                           onTap: () {
                             setState(() {
@@ -344,42 +346,42 @@ class _AddReminderPageState extends State<AddReminderPage> {
                   ),
                   const SizedBox(height: 8),
                   if (_byMileage) ...[
-                    AppLabel(text: 'Пробег'),
+                    AppLabel(text: l10n.fuel_mileage),
                     AppTextField(
                       controller: _currentMileageController,
-                      hint: "Введите текущий пробег",
-                      suffix: 'км',
+                      hint: l10n.enter_current_mileage,
+                      suffix: l10n.km,
                       keyboardType: TextInputType.number,
                       inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Введите текущий пробег';
+                          return l10n.enter_current_mileage;
                         }
                         return null;
                       },
                     ),
                     const SizedBox(height: 8),
-                    AppLabel(text: "Интервал"),
+                    AppLabel(text: l10n.interval),
                     AppTextField(
                       controller: _intervalMileageController,
-                      hint: "Например: 10 000",
-                      suffix: "км",
+                      hint: "${l10n.for_example} 10 000",
+                      suffix: l10n.km,
                       keyboardType: TextInputType.number,
                       inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                       validator: (value) {
                         final interval = int.tryParse(value ?? '');
                         if (interval == null || interval < 0) {
-                          return 'Введите корректный интервал';
+                          return l10n.enter_a_valid_interval;
                         }
                         return null;
                       },
                     ),
                     const SizedBox(height: 8),
-                    AppLabel(text: "Следующий пробег"),
+                    AppLabel(text: l10n.next_mileage),
                     AppTextField(
                       controller: _nextMileageController,
-                      hint: "Рассчитывается автоматически",
-                      suffix: "км",
+                      hint: l10n.calculated_automatically,
+                      suffix: l10n.km,
                       keyboardType: TextInputType.number,
                       inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                       validator: (value) {
@@ -388,40 +390,40 @@ class _AddReminderPageState extends State<AddReminderPage> {
                           _currentMileageController.text,
                         );
                         if (next == null) {
-                          return 'Введите следущий пробег';
+                          return l10n.enter_next_mileage;
                         }
                         if (widget.reminder == null &&
                             current != null &&
                             next < current) {
-                          return "Пробег не может быть меньше текущего";
+                          return l10n.mileage_cannot_be_less_than_current;
                         }
                         return null;
                       },
                     ),
                   ] else ...[
-                    AppLabel(text: 'Дата'),
+                    AppLabel(text: l10n.fuel_date),
                     AppDateField(date: _currentDate, onTap: _selectCurrentDate),
                     const SizedBox(height: 8),
-                    AppLabel(text: 'Интервал'),
+                    AppLabel(text: l10n.interval),
                     AppTextField(
                       controller: _intervalMonthsController,
-                      hint: "Например: 6",
-                      suffix: 'мес.',
+                      hint: "${l10n.for_example}: 6",
+                      suffix: l10n.mon_point,
                       keyboardType: TextInputType.number,
                       inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                       validator: (value) {
                         final months = int.tryParse(value ?? '');
                         if (months == null || months < 0) {
-                          return 'Введите корректный интервал';
+                          return l10n.enter_a_valid_interval;
                         }
                         return null;
                       },
                     ),
                     const SizedBox(height: 8),
-                    AppLabel(text:'Следующая дата'),
+                    AppLabel(text:l10n.next_date),
                     AppDateField(
                       date: _nextDate,
-                      placeholder: "Рассчитывается автоматически",
+                      placeholder: l10n.calculated_automatically,
                       onTap: _selectNextDate,
                     ),
                   ],
@@ -455,7 +457,7 @@ class _AddReminderPageState extends State<AddReminderPage> {
                             ),
                           ),
                           child: Text(
-                            "Выполнить ТО",
+                            l10n.complete,
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
@@ -479,8 +481,8 @@ class _AddReminderPageState extends State<AddReminderPage> {
                     ),
                     child: Text(
                       widget.reminder == null
-                          ? 'Сохранить напоминание'
-                          : 'Изменить',
+                          ? l10n.save
+                          : l10n.change,
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,

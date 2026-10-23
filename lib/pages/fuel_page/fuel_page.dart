@@ -62,7 +62,7 @@ class _FuelPageState extends State<FuelPage> {
       ),
       body: Padding(
         padding: EdgeInsets.all(16.0),
-        child: _buildFuelContent(),
+        child: _buildFuelContent(l10n),
       ),    
       floatingActionButton: Column(
         mainAxisSize: MainAxisSize.min,
@@ -104,14 +104,14 @@ class _FuelPageState extends State<FuelPage> {
     );
   }
 
-  Widget _buildFuelContent() {
+  Widget _buildFuelContent(AppLocalizations l10n) {
     if (_fuelManager.entries.isEmpty) {
       return const Center(child: Text('Заправок пока нет', style: TextStyle(color: AppTheme.textColor, fontSize: 16)),);
     }
     final List<Widget> items = [];
     String? prevMonth;
     for (final entry in _fuelManager.entries) {
-      final month = monthName(entry.date);
+      final month = monthName(entry.date, l10n);
       if (month != prevMonth) {
         if (items.isNotEmpty) {
           items.add(const SizedBox(height: 16,));

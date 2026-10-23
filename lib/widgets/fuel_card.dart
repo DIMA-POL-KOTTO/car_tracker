@@ -1,4 +1,5 @@
 
+import 'package:car_tracker/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:car_tracker/theme/app_theme.dart';
 import 'package:car_tracker/models/fuel_entry.dart';
@@ -20,6 +21,7 @@ class FuelCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!; 
     return Card(
       margin: EdgeInsets.zero,
       elevation: 1,
@@ -115,15 +117,15 @@ class FuelCard extends StatelessWidget {
               Row(
                 children: [
                   _InfoItem(
-                    label: 'Топливо',
-                    value: fuelTypeName(entry.fuelType),
+                    label: l10n.fuel_type,
+                    value: fuelTypeName(entry.fuelType, l10n),
                   ),
                   _InfoItem(
-                    label: 'Количество',
-                    value: '${entry.amount.toStringAsFixed(2)} л',
+                    label: l10n.fuel_amount,
+                    value: '${entry.amount.toStringAsFixed(2)} ${l10n.l}',
                   ),
                   _InfoItem(
-                    label: 'Цена за литр',
+                    label: '${l10n.fuel_price} ${l10n.liter}',
                     value: '${entry.price.toStringAsFixed(2)} BYN',
                   ),
                 ],

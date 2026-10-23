@@ -1,4 +1,4 @@
-import 'package:car_tracker/theme/app_theme.dart';
+﻿import 'package:car_tracker/theme/app_theme.dart';
 import 'package:car_tracker/l10n/app_localizations.dart';
 import 'package:car_tracker/widgets/app_section_heading.dart';
 import 'package:flutter/material.dart';
@@ -118,7 +118,7 @@ class _MaintenancePageState extends State<MaintenancePage> {
       appBar: AppBar(
         title: Text(
           _isHistorySelectionMode
-              ? 'Выбрано: ${_selectedHistoryIds.length}'
+              ? '${l10n.selected}: ${_selectedHistoryIds.length}'
               : l10n.maintenance_page,
         ),
         titleTextStyle: const TextStyle(
@@ -152,10 +152,10 @@ class _MaintenancePageState extends State<MaintenancePage> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Text('Не удалось загрузить напоминания'),
+                        Text(l10n.failed_to_load_reminders),
                         TextButton(
                           onPressed: () => setState(_loadMaintenanceData),
-                          child: const Text('Повторить'),
+                          child: Text(l10n.repeate),
                         ),
                       ],
                     ),
@@ -164,8 +164,8 @@ class _MaintenancePageState extends State<MaintenancePage> {
 
                 final data = snapshot.data;
                 if (data == null || (data.$1.isEmpty && data.$2.isEmpty)) {
-                  return const Center(
-                    child: Text('Пока нет напоминаний о техобслуживании'),
+                  return Center(
+                    child: Text(l10n.no_maintenance_reminders_yet),
                   );
                 }
 
@@ -174,7 +174,7 @@ class _MaintenancePageState extends State<MaintenancePage> {
                 return ListView(
                   children: [
                     if (reminders.isNotEmpty) ...[
-                      AppSectionHeading(title: 'Напоминания'),
+                      AppSectionHeading(title: l10n.reminders),
                       ...reminders.map(
                         (reminder) => Padding(
                           padding: const EdgeInsets.only(bottom: 16),
@@ -187,7 +187,7 @@ class _MaintenancePageState extends State<MaintenancePage> {
                       ),
                     ],
                     if (history.isNotEmpty) ...[
-                      AppSectionHeading(title: 'История'),
+                      AppSectionHeading(title: l10n.history),
                       ...history.map(_buildHistoryCard),
                     ],
                   ],

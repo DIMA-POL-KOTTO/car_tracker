@@ -1,3 +1,4 @@
+import 'package:car_tracker/l10n/app_localizations.dart';
 import 'package:car_tracker/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:car_tracker/models/maintenance_category.dart';
@@ -11,6 +12,7 @@ class ReminderCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final title = reminder['title']?.toString() ?? 'Техобслуживание';
     final category = reminder['category']?.toString();
     final maintenanceCategory = MaintenanceCategory.fromLabel(category);
@@ -106,8 +108,8 @@ class ReminderCard extends StatelessWidget {
                     Expanded(
                       child: Text(
                         isMileageReminder
-                            ? 'Следующее ТО: $dueMileage км'
-                            : 'Следующее ТО: $dueDate',
+                            ? '${l10n.next_maintenance}: $dueMileage ${l10n.km}'
+                            : '${l10n.next_maintenance}: $dueDate',
                         style: const TextStyle(
                           color: AppTheme.textSecondaryColor,
                           fontSize: 14,

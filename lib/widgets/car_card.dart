@@ -15,6 +15,7 @@ class CarCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Card(
       color: Theme.of(context).colorScheme.surface,
       margin: EdgeInsets.zero,
@@ -50,8 +51,8 @@ class CarCard extends StatelessWidget {
                     }
                   },
                   itemBuilder: (context) => [
-                    const PopupMenuItem(value: 'delete', child: Text('Удалить'),),
-                    const PopupMenuItem(value: 'update', child: Text('Изменить'),),
+                    PopupMenuItem(value: 'delete', child: Text(l10n.delete),),
+                    PopupMenuItem(value: 'update', child: Text(l10n.change),),
                   ],
                 ),
               ],
@@ -85,14 +86,14 @@ class CarCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Пробег',
+                l10n.fuel_mileage,
                 style: TextStyle(
                   color: AppTheme.textSecondaryColor,
                 ),
               ),
               const SizedBox(height: 4),
               Text(
-                '${car.mileage} км',
+                '${car.mileage} ${l10n.km}',
                 style: const TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
@@ -103,7 +104,7 @@ class CarCard extends StatelessWidget {
           ),
           TextButton(
             onPressed: () => _showMileageDialog(context),
-            child: Text('Обновить',
+            child: Text(l10n.update_btn,
               style: const TextStyle(
                 color: AppTheme.primaryColor,
                 fontSize: 14
@@ -125,18 +126,18 @@ class CarCard extends StatelessWidget {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Обновить пробег'),
+          title: Text(l10n.update_mileage),
           content: TextField(
             controller: controller,
             keyboardType: TextInputType.number,
-            decoration: const InputDecoration(
-              labelText: 'Пробег (км)',
+            decoration: InputDecoration(
+              labelText: "${l10n.fuel_mileage} (${l10n.km})",
             ),
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Отмена'),
+              child: Text(l10n.cancel),
             ),
             ElevatedButton(
               onPressed: () async {
@@ -146,7 +147,7 @@ class CarCard extends StatelessWidget {
                   Navigator.pop(context);
                 } 
               },
-              child: const Text('Сохранить'),
+              child: Text(l10n.save),
             ),
           ],
         );

@@ -100,29 +100,29 @@ class _FuelFormState extends State<FuelForm> {
 
   Widget _buildContent(AppLocalizations l10n) {
     final List<Widget> children = [
-      AppSectionHeading(title: "Информация о заправке"),
+      AppSectionHeading(title: l10n.refilling_information),
       AppLabel(text: "Организация"),
       AppTextField(
         controller: _organizationController,
         hint: "Например: Белоруснефть",
       ),
-      AppLabel(text: "Станция"),
+      AppLabel(text: l10n.fuel_station),
       AppTextField(
         controller: _stationController,
-        hint: "Например: АЗС №6 г.Гродно",
+        hint: "${l10n.for_example}: ${l10n.fuel_station} №6 ${l10n.town_point} ${l10n.grodno}",
       ),
-      AppLabel(text: "Дата заправки"),
+      AppLabel(text: l10n.fuel_date),
       AppDateField(date: _selectedDate, onTap: _selectDate),
       const SizedBox(height: 16,),
-      AppSectionHeading(title: "Данные топлива"),
-      AppLabel(text: "Тип топлива"),
+      AppSectionHeading(title: l10n.fuel_data),
+      AppLabel(text: l10n.fuel_type),
       AppDropdownField<FuelType>(
         value: _fuelType,
         hint: l10n.fuel_type,
         items: FuelType.values.map((type) {
           return DropdownMenuItem<FuelType>(
             value: type,
-            child: Text(fuelTypeName(type)),
+            child: Text(fuelTypeName(type, l10n)),
           );
         }).toList(),
         onChanged: (value) {
@@ -137,7 +137,7 @@ class _FuelFormState extends State<FuelForm> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                AppLabel(text: "Количество топлива"),
+                AppLabel(text: l10n.fuel_amount),
                 AppTextField(
                   controller: _amountController,
                   keyboardType: const TextInputType.numberWithOptions(
@@ -147,7 +147,7 @@ class _FuelFormState extends State<FuelForm> {
                   onChanged: (_) {
                     setState(() {});
                   },
-                  suffix: "л.",
+                  suffix: "${l10n.l}.",
                 ),
               ]
             )
@@ -157,7 +157,7 @@ class _FuelFormState extends State<FuelForm> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                AppLabel(text: "Цена за литр"),
+                AppLabel(text: "${l10n.fuel_price} ${l10n.liter}"),
                 AppTextField(
                   controller: _priceController,
                   keyboardType: const TextInputType.numberWithOptions(
@@ -175,7 +175,7 @@ class _FuelFormState extends State<FuelForm> {
         ],
       ),
 
-      AppLabel(text: "Общая стоимость"),
+      AppLabel(text: l10n.fuel_total_cost),
       AppTextField(
         controller: _totalCostController,
         keyboardType: const TextInputType.numberWithOptions(
@@ -189,12 +189,12 @@ class _FuelFormState extends State<FuelForm> {
       ),
 
       _buildTotalCostWarning(),
-      AppLabel(text: "Пробег"),
+      AppLabel(text: l10n.fuel_mileage),
       AppTextField(
         controller: _mileageController,
         keyboardType: TextInputType.number,
         hint: l10n.fuel_mileage,
-        suffix: "км",
+        suffix: l10n.km,
       ),
       SizedBox(height: 16,),
       Padding(
@@ -208,7 +208,7 @@ class _FuelFormState extends State<FuelForm> {
                 },
                 style: ElevatedButton.styleFrom(foregroundColor: AppTheme.primaryColor,
                   side: const BorderSide(color: AppTheme.primaryColor)),
-                child: const Text('Отмена'),
+                child: Text(l10n.cancel),
                 
               ),
             ),
@@ -219,7 +219,7 @@ class _FuelFormState extends State<FuelForm> {
                 onPressed: _save,
                 style: ElevatedButton.styleFrom(backgroundColor: AppTheme.primaryColor, foregroundColor: AppTheme.backgroundColor),
                 child: Text(
-                  widget.isEditing ? 'Сохранить' : 'Добавить',
+                  widget.isEditing ? l10n.save : l10n.add,
                 ),
               ),
             ),

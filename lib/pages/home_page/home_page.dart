@@ -87,8 +87,8 @@ class _HomePageState extends State<HomePage> {
     }
     children.addAll([
       const SizedBox(height: 16,),
-      AppSectionHeading(title: "Последняя заправка"),
-      _buildLastFuel()
+      AppSectionHeading(title: l10n.last_refill),
+      _buildLastFuel(l10n)
     ]);
     return SingleChildScrollView(
       child: Column(
@@ -98,15 +98,15 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildLastFuel() {
+  Widget _buildLastFuel(AppLocalizations l10n) {
     if (_fuelManager.entries.isEmpty) {
-      return const Card(
+      return Card(
         child: Padding(
           padding: EdgeInsets.all(16),
           child: SizedBox(
             width: double.infinity,
             child: Text(
-              'Заправок пока нет',
+              l10n.no_refills_yet,
               style: TextStyle(color: AppTheme.textColor),
             ),
           ),
