@@ -16,6 +16,7 @@ class CarCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      color: Theme.of(context).colorScheme.surface,
       margin: EdgeInsets.zero,
       elevation: 1,
       shape: RoundedRectangleBorder(

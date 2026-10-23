@@ -25,6 +25,7 @@ class HistoryMaintenanceCard extends StatelessWidget {
     final cost = _formatCost(history['cost']);
 
     return Card(
+      color: Theme.of(context).colorScheme.surface,
       margin: EdgeInsets.zero,
       elevation: 1,
       shape: RoundedRectangleBorder(

@@ -5,7 +5,8 @@ import 'package:flutter/material.dart';
 
 class MorePage extends StatelessWidget {
   final void Function(Locale) onChangeLanguage;
-  const MorePage({super.key, required this.onChangeLanguage});
+  final void Function(ThemeMode) onChangeTheme;
+  const MorePage({super.key, required this.onChangeLanguage, required this.onChangeTheme});
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +34,7 @@ class MorePage extends StatelessWidget {
               MaterialPageRoute(
                   builder: (context) => SettingsPage(
                     onChangeLanguage: onChangeLanguage,
+                    onChangeTheme: onChangeTheme
                   ),
                 ),
               );

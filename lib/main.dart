@@ -14,6 +14,7 @@ void main() {
 
 class CarCareApp extends StatefulWidget {
   const CarCareApp({super.key});
+  
 
   @override
   State<CarCareApp> createState() => _CarCareAppState();
@@ -21,9 +22,15 @@ class CarCareApp extends StatefulWidget {
 
 class _CarCareAppState extends State<CarCareApp> {
   Locale? _locale;
+  ThemeMode _themeMode = ThemeMode.light;
   void changeLanguage(Locale locale) {
     setState(() {
       _locale = locale;
+    });
+  }
+  void changeTheme(ThemeMode mode) {
+    setState(() {
+      _themeMode = mode;
     });
   }
 
@@ -33,6 +40,8 @@ class _CarCareAppState extends State<CarCareApp> {
       debugShowCheckedModeBanner: false,
       title: 'CarCare',
       theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
+      themeMode: _themeMode,
       locale: _locale,
       localizationsDelegates: const [
         AppLocalizations.delegate,
@@ -46,6 +55,7 @@ class _CarCareAppState extends State<CarCareApp> {
       ],
       home: MainScreen(
         onChangeLanguage: changeLanguage,
+        onChangeTheme: changeTheme,
       ),
     );
   }
@@ -53,7 +63,8 @@ class _CarCareAppState extends State<CarCareApp> {
 
 class MainScreen extends StatefulWidget {
   final void Function(Locale) onChangeLanguage;
-  const MainScreen({super.key, required this.onChangeLanguage});
+  final void Function(ThemeMode) onChangeTheme;
+  const MainScreen({super.key, required this.onChangeLanguage, required this.onChangeTheme});
 
   @override
   State<MainScreen> createState() => _MainScreenState();
@@ -93,7 +104,7 @@ class _MainScreenState extends State<MainScreen> {
       const HomePage(),
       const FuelPage(),
       const MaintenancePage(),
-      MorePage(onChangeLanguage: widget.onChangeLanguage),
+      MorePage(onChangeLanguage: widget.onChangeLanguage, onChangeTheme: widget.onChangeTheme),
     ];
     return Scaffold(
       body: Stack(children: [

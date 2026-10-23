@@ -21,6 +21,7 @@ class ReminderCard extends StatelessWidget {
     final hasDueDate = dueDate != null && dueDate.isNotEmpty;
 
     return Card(
+      color: Theme.of(context).colorScheme.surface,
       margin: EdgeInsets.zero,
       elevation: 1,
       shape: RoundedRectangleBorder(

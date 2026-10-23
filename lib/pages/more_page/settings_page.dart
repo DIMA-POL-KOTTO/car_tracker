@@ -4,10 +4,12 @@ import 'package:flutter/material.dart';
 
 class SettingsPage extends StatelessWidget {
   final void Function(Locale) onChangeLanguage;
+  final void Function(ThemeMode) onChangeTheme;
 
   const SettingsPage({
     super.key,
     required this.onChangeLanguage,
+    required this.onChangeTheme,
   });
 
   @override
@@ -50,9 +52,7 @@ class SettingsPage extends StatelessWidget {
             trailing: const Icon(Icons.chevron_right),
             iconColor: AppTheme.textSecondaryColor,
             textColor: AppTheme.textColor,
-            onTap: () {
-              // Позже добавим выбор темы
-            },
+            onTap: () {_showThemePicker(context);}
           ),
 
           ListTile(
@@ -122,6 +122,37 @@ class SettingsPage extends StatelessWidget {
                 ),
               ],
             ),
+          ),
+        );
+      },
+    );
+  }
+
+  void _showThemePicker(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                title: Text(l10n.light),
+                onTap: () {
+                  onChangeTheme(ThemeMode.light);
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                title: Text("Темная"),
+                onTap: () {
+                  onChangeTheme(ThemeMode.dark);
+                  Navigator.pop(context);
+                },
+              ),
+            ],
           ),
         );
       },
