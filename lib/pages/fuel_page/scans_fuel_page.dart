@@ -1,7 +1,6 @@
 import 'package:car_tracker/pages/fuel_page/fuel_form.dart';
 import 'package:car_tracker/services/scan_manager.dart';
 import 'package:flutter/material.dart';
-import 'package:car_tracker/theme/app_theme.dart';
 
 class ScansFuelPage extends StatefulWidget {
   const ScansFuelPage({super.key});
@@ -31,11 +30,12 @@ class _ScansFuelPageState extends State<ScansFuelPage> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Обработка чеков'),
-        titleTextStyle: const TextStyle(
-          color: AppTheme.textColor,
+        titleTextStyle: TextStyle(
+          color: colorScheme.onSurface,
           fontSize: 28,
           fontWeight: FontWeight.bold,
         ),
@@ -48,8 +48,11 @@ class _ScansFuelPageState extends State<ScansFuelPage> {
   }
   Widget _buildScanList() {
     if (_scanManager.scans.isEmpty) {
-      return const Center(
-        child: Text('Нет чеков на обработке', style: TextStyle(color: AppTheme.textColor, fontSize: 16)),
+      return Center(
+        child: Text(
+          'Нет чеков на обработке',
+          style: TextStyle(color: Theme.of(context).colorScheme.onSurface, fontSize: 16),
+        ),
       );
     }
     return ListView.separated(itemBuilder: (context, index) {

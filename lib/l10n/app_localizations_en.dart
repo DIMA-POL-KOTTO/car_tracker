@@ -101,6 +101,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get light => 'Light';
 
   @override
+  String get dark => 'Dark';
+
+  @override
   String get notifications => 'Notifications';
 
   @override

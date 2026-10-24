@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:car_tracker/l10n/app_localizations.dart';
 import 'package:car_tracker/services/car_manager.dart';
 import 'package:car_tracker/services/maintenance_service.dart';
@@ -98,11 +96,12 @@ class _CompleteMaintenanceState extends State<CompleteMaintenance> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final colorScheme = Theme.of(context).colorScheme;
     return Scaffold(
       appBar: AppBar(
         title: Text(l10n.completing),
-        titleTextStyle: const TextStyle(
-          color: AppTheme.textColor,
+        titleTextStyle: TextStyle(
+          color: colorScheme.onSurface,
           fontSize: 24,
           fontWeight: FontWeight.bold,
         ),
@@ -213,8 +212,8 @@ class _FieldLabel extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
       child: Text(
         text,
-        style: const TextStyle(
-          color: AppTheme.textSecondaryColor,
+        style: TextStyle(
+          color: Theme.of(context).colorScheme.onSurfaceVariant,
           fontSize: 14,
           fontWeight: FontWeight.w600,
         ),

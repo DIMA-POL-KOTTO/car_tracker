@@ -278,6 +278,12 @@ abstract class AppLocalizations {
   /// **'Светлая'**
   String get light;
 
+  /// No description provided for @dark.
+  ///
+  /// In ru, this message translates to:
+  /// **'Тёмная'**
+  String get dark;
+
   /// No description provided for @notifications.
   ///
   /// In ru, this message translates to:

@@ -114,6 +114,7 @@ class _MaintenancePageState extends State<MaintenancePage> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final colorScheme = Theme.of(context).colorScheme;
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -121,8 +122,8 @@ class _MaintenancePageState extends State<MaintenancePage> {
               ? '${l10n.selected}: ${_selectedHistoryIds.length}'
               : l10n.maintenance_page,
         ),
-        titleTextStyle: const TextStyle(
-          color: AppTheme.textColor,
+        titleTextStyle: TextStyle(
+          color: colorScheme.onSurface,
           fontSize: 28,
           fontWeight: FontWeight.bold,
         ),
@@ -198,7 +199,7 @@ class _MaintenancePageState extends State<MaintenancePage> {
       floatingActionButton: FloatingActionButton(
         heroTag: 'add_maintenance_button',
         backgroundColor: AppTheme.primaryColor,
-        foregroundColor: AppTheme.backgroundColor,
+        foregroundColor: colorScheme.onPrimary,
         onPressed: () => _openReminderForm(),
         child: const Icon(Icons.add, size: 31),
       ),

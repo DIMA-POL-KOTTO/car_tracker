@@ -16,8 +16,9 @@ class CarCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final colorScheme = Theme.of(context).colorScheme;
     return Card(
-      color: Theme.of(context).colorScheme.surface,
+      color: colorScheme.surface,
       margin: EdgeInsets.zero,
       elevation: 1,
       shape: RoundedRectangleBorder(
@@ -35,9 +36,9 @@ class CarCard extends StatelessWidget {
                 Expanded(
                   child: Text(
                     car.name,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 20,
-                      color: AppTheme.textColor,
+                      color: colorScheme.onSurface,
                     ),  
                   ),
                 ),
@@ -88,16 +89,16 @@ class CarCard extends StatelessWidget {
               Text(
                 l10n.fuel_mileage,
                 style: TextStyle(
-                  color: AppTheme.textSecondaryColor,
+                  color: colorScheme.onSurfaceVariant,
                 ),
               ),
               const SizedBox(height: 4),
               Text(
                 '${car.mileage} ${l10n.km}',
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
-                  color: AppTheme.textColor,
+                  color: colorScheme.onSurface,
                 ),
               ),
             ],

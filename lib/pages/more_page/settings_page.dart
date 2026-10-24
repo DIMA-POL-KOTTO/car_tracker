@@ -1,4 +1,3 @@
-import 'package:car_tracker/theme/app_theme.dart';
 import 'package:car_tracker/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 
@@ -15,7 +14,7 @@ class SettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-
+    final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
         title: Text(l10n.settings),
@@ -28,13 +27,13 @@ class SettingsPage extends StatelessWidget {
             title: Text(l10n.language),
             subtitle: Text(
               l10n.english_lang,
-              style: const TextStyle(
-                color: AppTheme.textSecondaryColor,
+              style: TextStyle(
+                color: theme.colorScheme.onSurfaceVariant,
               ),
             ),
             trailing: const Icon(Icons.chevron_right),
-            iconColor: AppTheme.textSecondaryColor,
-            textColor: AppTheme.textColor,
+            iconColor: theme.colorScheme.onSurface,
+            textColor: theme.colorScheme.onSurface,
             onTap: () {
               _showLanguagePicker(context);
             },
@@ -45,13 +44,13 @@ class SettingsPage extends StatelessWidget {
             title: Text(l10n.theme),
             subtitle: Text(
               l10n.light,
-              style: const TextStyle(
-                color: AppTheme.textSecondaryColor,
+              style: TextStyle(
+                color: theme.colorScheme.onSurfaceVariant,
               ),
             ),
             trailing: const Icon(Icons.chevron_right),
-            iconColor: AppTheme.textSecondaryColor,
-            textColor: AppTheme.textColor,
+            iconColor: theme.colorScheme.onSurface,
+            textColor: theme.colorScheme.onSurface,
             onTap: () {_showThemePicker(context);}
           ),
 
@@ -59,8 +58,8 @@ class SettingsPage extends StatelessWidget {
             leading: const Icon(Icons.notifications),
             title: Text(l10n.notifications),
             trailing: const Icon(Icons.chevron_right),
-            iconColor: AppTheme.textSecondaryColor,
-            textColor: AppTheme.textColor,
+            iconColor: theme.colorScheme.onSurface,
+            textColor: theme.colorScheme.onSurface,
             onTap: () {
               // Позже добавим настройки уведомлений
             },
@@ -146,7 +145,7 @@ class SettingsPage extends StatelessWidget {
                 },
               ),
               ListTile(
-                title: Text("Темная"),
+                title: Text(l10n.dark),
                 onTap: () {
                   onChangeTheme(ThemeMode.dark);
                   Navigator.pop(context);

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:car_tracker/theme/app_theme.dart';
 
 class AppLabel extends StatelessWidget{
   final String text;
@@ -8,14 +7,13 @@ class AppLabel extends StatelessWidget{
 
   @override
    Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Padding(
       padding: const EdgeInsets.all(8),
       child: Text(
         text,
-        style: TextStyle(color: AppTheme.textColor, fontSize: 15),
+        style: TextStyle(color: colorScheme.onSurface, fontSize: 15),
       ),
     );
   }
 }
-  
- 

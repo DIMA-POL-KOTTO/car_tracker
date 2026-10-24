@@ -1,4 +1,3 @@
-import 'package:car_tracker/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
 class AppSectionHeading extends StatelessWidget {
@@ -9,6 +8,7 @@ class AppSectionHeading extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Padding(
       padding: const EdgeInsets.only(left: 4, bottom: 12),
       child: Column(
@@ -16,8 +16,8 @@ class AppSectionHeading extends StatelessWidget {
         children: [
           Text(
             title,
-            style: const TextStyle(
-              color: AppTheme.textColor,
+            style: TextStyle(
+              color: colorScheme.onSurface,
               fontSize: 20,
               fontWeight: FontWeight.bold,
             ),
@@ -26,8 +26,8 @@ class AppSectionHeading extends StatelessWidget {
             const SizedBox(height: 4),
             Text(
               subtitle!,
-              style: const TextStyle(
-                color: AppTheme.secondaryColor,
+              style: TextStyle(
+                color: colorScheme.onSurfaceVariant,
                 fontSize: 14,
               ),
             ),

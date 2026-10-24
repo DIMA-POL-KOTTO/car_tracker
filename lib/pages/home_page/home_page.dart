@@ -1,7 +1,6 @@
 import 'package:car_tracker/pages/fuel_page/fuel_form.dart';
 import 'package:car_tracker/pages/home_page/add_car_page.dart';
 import 'package:car_tracker/services/car_manager.dart';
-import 'package:car_tracker/theme/app_theme.dart';
 import 'package:car_tracker/l10n/app_localizations.dart';
 import 'package:car_tracker/widgets/app_section_heading.dart';
 import 'package:car_tracker/widgets/car_empty_card.dart';
@@ -49,11 +48,12 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
         title: Text(l10n.home_page),
-        titleTextStyle: const TextStyle(
-          color: AppTheme.textColor,
+        titleTextStyle: TextStyle(
+          color: theme.colorScheme.onSurface,
           fontSize: 28,
           fontWeight: FontWeight.bold
         )
@@ -101,13 +101,16 @@ class _HomePageState extends State<HomePage> {
   Widget _buildLastFuel(AppLocalizations l10n) {
     if (_fuelManager.entries.isEmpty) {
       return Card(
+        color: Theme.of(context).colorScheme.surface,
         child: Padding(
           padding: EdgeInsets.all(16),
           child: SizedBox(
             width: double.infinity,
             child: Text(
               l10n.no_refills_yet,
-              style: TextStyle(color: AppTheme.textColor),
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onSurface,
+              ),
             ),
           ),
         ),
@@ -120,4 +123,3 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
-  

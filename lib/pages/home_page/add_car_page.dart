@@ -51,11 +51,12 @@ class _AddCarPageState extends State<AddCarPage> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final colorScheme = Theme.of(context).colorScheme;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Добавить автомобиль'),
-        titleTextStyle: const TextStyle(
-          color: AppTheme.textColor,
+        titleTextStyle: TextStyle(
+          color: colorScheme.onSurface,
           fontSize: 24,
           fontWeight: FontWeight.bold
         )
@@ -126,7 +127,7 @@ class _AddCarPageState extends State<AddCarPage> {
               onPressed: _save,
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppTheme.primaryColor,
-                foregroundColor: AppTheme.backgroundColor,
+                foregroundColor: Theme.of(context).colorScheme.onPrimary,
               ),
               child: const Text('Сохранить'),
             ),

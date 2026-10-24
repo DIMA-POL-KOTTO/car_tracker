@@ -100,6 +100,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get light => 'Светлая';
 
   @override
+  String get dark => 'Тёмная';
+
+  @override
   String get notifications => 'Уведомления';
 
   @override

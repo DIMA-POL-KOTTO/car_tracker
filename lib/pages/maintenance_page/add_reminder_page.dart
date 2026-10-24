@@ -237,6 +237,7 @@ class _AddReminderPageState extends State<AddReminderPage> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final colorScheme = Theme.of(context).colorScheme;
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -244,8 +245,8 @@ class _AddReminderPageState extends State<AddReminderPage> {
               ? l10n.new_reminder
               : l10n.editing,
         ),
-        titleTextStyle: const TextStyle(
-          color: AppTheme.textColor,
+        titleTextStyle: TextStyle(
+          color: colorScheme.onSurface,
           fontSize: 24,
           fontWeight: FontWeight.bold,
         ),
@@ -297,8 +298,8 @@ class _AddReminderPageState extends State<AddReminderPage> {
                   children: [
                     Expanded(child: AppLabel(text: l10n.repeate_maintenance)),
                     Switch(
-                      inactiveThumbColor: AppTheme.secondaryColor,
-                      activeThumbColor: AppTheme.backgroundColor,
+                      inactiveThumbColor: colorScheme.onSurfaceVariant,
+                      activeThumbColor: colorScheme.onPrimary,
                       trackOutlineColor: WidgetStatePropertyAll(AppTheme.primaryColor.withValues(alpha: 0.12)),
                       activeTrackColor: AppTheme.primaryColor,
                       inactiveTrackColor: AppTheme.primaryColor.withValues(alpha: 0.04),
@@ -474,7 +475,7 @@ class _AddReminderPageState extends State<AddReminderPage> {
                     onPressed: _saveReminder,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppTheme.primaryColor,
-                      foregroundColor: AppTheme.backgroundColor,
+                      foregroundColor: colorScheme.onPrimary,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(16),
                       ),
@@ -503,6 +504,7 @@ class _AddReminderPageState extends State<AddReminderPage> {
     required bool selected,
     required VoidCallback onTap,
   }) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Expanded(
       child: GestureDetector(
         onTap: onTap,
@@ -510,14 +512,14 @@ class _AddReminderPageState extends State<AddReminderPage> {
           duration: const Duration(microseconds: 180),
           padding: const EdgeInsets.symmetric(vertical: 13),
           decoration: BoxDecoration(
-            color: selected ? AppTheme.primaryColor : AppTheme.backgroundColor,
+            color: selected ? colorScheme.primary : colorScheme.surface,
             borderRadius: BorderRadius.circular(12),
           ),
           alignment: Alignment.center,
           child: Text(
             title,
             style: TextStyle(
-              color: selected ? AppTheme.backgroundColor : AppTheme.textColor,
+              color: selected ? colorScheme.onPrimary : colorScheme.onSurface,
             ),
           ),
         ),

@@ -18,6 +18,7 @@ class HistoryMaintenanceCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     final title = history['title']?.toString() ?? 'Техобслуживание';
     final category = history['category']?.toString();
     final completedDate = history['date']?.toString();
@@ -64,8 +65,8 @@ class HistoryMaintenanceCard extends StatelessWidget {
                       children: [
                         Text(
                           title,
-                          style: const TextStyle(
-                            color: AppTheme.textColor,
+                          style: TextStyle(
+                            color: colorScheme.onSurface,
                             fontSize: 17,
                             fontWeight: FontWeight.bold,
                           ),
@@ -74,8 +75,8 @@ class HistoryMaintenanceCard extends StatelessWidget {
                           const SizedBox(height: 4),
                           Text(
                             category,
-                            style: const TextStyle(
-                              color: AppTheme.textSecondaryColor,
+                            style: TextStyle(
+                              color: colorScheme.onSurfaceVariant,
                               fontSize: 14,
                             ),
                           ),
@@ -93,17 +94,17 @@ class HistoryMaintenanceCard extends StatelessWidget {
                 Row(
                   children: [
                     if (completedDate != null && completedDate.isNotEmpty) ...[
-                      const Icon(
+                      Icon(
                         Icons.calendar_today,
                         size: 18,
-                        color: AppTheme.secondaryColor,
+                        color: colorScheme.onSurfaceVariant,
                       ),
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(
                           completedDate,
-                          style: const TextStyle(
-                            color: AppTheme.textSecondaryColor,
+                          style: TextStyle(
+                            color: colorScheme.onSurfaceVariant,
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
                           ),
@@ -114,8 +115,8 @@ class HistoryMaintenanceCard extends StatelessWidget {
                     if (cost != null)
                       Text(
                         '$cost BYN',
-                        style: const TextStyle(
-                          color: AppTheme.textColor,
+                        style: TextStyle(
+                          color: colorScheme.onSurface,
                           fontSize: 15,
                           fontWeight: FontWeight.bold,
                         ),

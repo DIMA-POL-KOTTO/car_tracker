@@ -48,11 +48,12 @@ class _FuelPageState extends State<FuelPage> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final colorScheme = Theme.of(context).colorScheme;
     return Scaffold(
       appBar: AppBar(
         title: Text(_isSelectionMode ? 'Выбрано: ${_selectedIds.length}' : l10n.fuel_page),
-        titleTextStyle: const TextStyle(
-          color: AppTheme.textColor,
+        titleTextStyle: TextStyle(
+          color: colorScheme.onSurface,
           fontSize: 28,
           fontWeight: FontWeight.bold
         ),
@@ -71,7 +72,7 @@ class _FuelPageState extends State<FuelPage> {
               FloatingActionButton(
               heroTag: 'scans_fuel_button',
               backgroundColor: AppTheme.primaryColor,
-              foregroundColor: const Color.fromARGB(255, 236, 216, 216),
+              foregroundColor: colorScheme.onPrimary,
               onPressed: () {
                 Navigator.push(
                   context,
@@ -88,7 +89,7 @@ class _FuelPageState extends State<FuelPage> {
           FloatingActionButton(
             heroTag: 'add_fuel_button',
             backgroundColor: AppTheme.primaryColor,
-            foregroundColor: AppTheme.backgroundColor,
+            foregroundColor: colorScheme.onPrimary,
             onPressed: () {
               Navigator.push(
                 context,
@@ -106,7 +107,15 @@ class _FuelPageState extends State<FuelPage> {
 
   Widget _buildFuelContent(AppLocalizations l10n) {
     if (_fuelManager.entries.isEmpty) {
-      return const Center(child: Text('Заправок пока нет', style: TextStyle(color: AppTheme.textColor, fontSize: 16)),);
+      return Center(
+        child: Text(
+          'Заправок пока нет',
+          style: TextStyle(
+            color: Theme.of(context).colorScheme.onSurface,
+            fontSize: 16,
+          ),
+        ),
+      );
     }
     final List<Widget> items = [];
     String? prevMonth;
@@ -119,8 +128,8 @@ class _FuelPageState extends State<FuelPage> {
         items.add(
           Padding(padding: const EdgeInsets.only(left: 8, bottom: 8),
             child: Text(month,
-              style: const TextStyle(
-                color: AppTheme.textColor,
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onSurface,
                 fontSize: 20,
                 fontWeight: FontWeight.bold
               ),

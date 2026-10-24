@@ -74,11 +74,12 @@ class _FuelFormState extends State<FuelForm> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final colorScheme = Theme.of(context).colorScheme;
     return Scaffold(
       appBar: AppBar(
         title: Text(l10n.fuel_form),
-        titleTextStyle: const TextStyle(
-          color: AppTheme.textColor,
+        titleTextStyle: TextStyle(
+          color: colorScheme.onSurface,
           fontSize: 24,
           fontWeight: FontWeight.bold
         ),
@@ -91,7 +92,7 @@ class _FuelFormState extends State<FuelForm> {
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: AppTheme.primaryColor,
-        foregroundColor: AppTheme.backgroundColor,
+        foregroundColor: colorScheme.onPrimary,
         child: const Icon(Icons.camera_alt, size: 31,),
         onPressed: _scanReceipt
       ),
@@ -217,7 +218,7 @@ class _FuelFormState extends State<FuelForm> {
               child: ElevatedButton(
                 
                 onPressed: _save,
-                style: ElevatedButton.styleFrom(backgroundColor: AppTheme.primaryColor, foregroundColor: AppTheme.backgroundColor),
+                style: ElevatedButton.styleFrom(backgroundColor: AppTheme.primaryColor, foregroundColor: Theme.of(context).colorScheme.onPrimary),
                 child: Text(
                   widget.isEditing ? l10n.save : l10n.add,
                 ),

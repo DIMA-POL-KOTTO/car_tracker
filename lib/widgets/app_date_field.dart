@@ -11,19 +11,20 @@ class AppDateField extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(16),
       child: InputDecorator(
         decoration: InputDecoration(
           hintText: placeholder,
-          hintStyle: const TextStyle(
+          hintStyle: TextStyle(
             fontSize: 14,
-            color: AppTheme.secondaryColor,
+            color: colorScheme.onSurfaceVariant,
           ),
           suffixIcon: const Icon(Icons.calendar_month_outlined),
           filled: true,
-          fillColor: AppTheme.primaryColor.withValues(alpha: 0.04),
+          fillColor: colorScheme.surface,
           contentPadding: const EdgeInsets.symmetric(
             horizontal: 16,
             vertical: 16,
@@ -49,7 +50,9 @@ class AppDateField extends StatelessWidget{
         child: Text(
           date == null ? placeholder : formatDate(date!),
           style: TextStyle(
-            color: date == null ? AppTheme.secondaryColor : AppTheme.textColor,
+            color: date == null
+                ? colorScheme.onSurfaceVariant
+                : colorScheme.onSurface,
             fontSize: 14,
             height: 1.7,
           ),

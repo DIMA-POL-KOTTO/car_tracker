@@ -22,10 +22,11 @@ class FuelCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!; 
+    final colorScheme = Theme.of(context).colorScheme;
     return Card(
       margin: EdgeInsets.zero,
       elevation: 1,
-      color: Theme.of(context).colorScheme.surface,
+      color: colorScheme.surface,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
         side: BorderSide(
@@ -69,18 +70,18 @@ class FuelCard extends StatelessWidget {
                       children: [
                         Text(
                           entry.station,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
-                            color: AppTheme.textColor,
+                            color: colorScheme.onSurface,
                           ),
                         ),
                         const SizedBox(height: 3),
                         Text(
                           entry.organization,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 12,
-                            color: AppTheme.textSecondaryColor,
+                            color: colorScheme.onSurfaceVariant,
                           ),
                         ),
                       ],
@@ -101,9 +102,9 @@ class FuelCard extends StatelessWidget {
                       const SizedBox(height: 3),
                       Text(
                         formatDate(entry.date),
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 12,
-                          color: AppTheme.textSecondaryColor,
+                          color: colorScheme.onSurfaceVariant,
                         ),
                       ),
                     ],
@@ -155,18 +156,18 @@ class _InfoItem extends StatelessWidget {
         children: [
           Text(
             label,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 11,
-              color: AppTheme.textSecondaryColor,
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
             ),
           ),
           const SizedBox(height: 5),
           Text(
             value,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 13,
               fontWeight: FontWeight.w600,
-              color: AppTheme.textColor,
+              color: Theme.of(context).colorScheme.onSurface,
             ),
             maxLines: 2,
             overflow: TextOverflow.ellipsis,

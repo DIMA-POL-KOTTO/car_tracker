@@ -19,17 +19,18 @@ class AppDropdownField<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return DropdownButtonFormField<T>(
       initialValue: value,
       isExpanded: true,
       decoration: InputDecoration(
         hintText: hint,
-        hintStyle: const TextStyle(
+        hintStyle: TextStyle(
           fontSize: 14,
-          color: AppTheme.secondaryColor,
+          color: colorScheme.onSurfaceVariant,
         ),
         filled: true,
-        fillColor: AppTheme.primaryColor.withValues(alpha: 0.04),
+        fillColor: colorScheme.surface,
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 16,
           vertical: 16,

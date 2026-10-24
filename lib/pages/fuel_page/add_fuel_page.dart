@@ -11,6 +11,7 @@ class AddFuelPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final colorScheme = Theme.of(context).colorScheme;
     final ImagePickerService imagePickerService = ImagePickerService();
     return Scaffold(
       appBar: AppBar(
@@ -56,12 +57,12 @@ class AddFuelPage extends StatelessWidget {
                         children: [
                           Text(
                             l10n.fuel_page_photo_btn_h,
-                            style: const TextStyle(fontSize: 17, fontWeight: FontWeight.bold, color: AppTheme.textColor,
+                          style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold, color: colorScheme.onSurface,
                           ),
                           ),
                           const SizedBox(height: 4),
                           Text(l10n.fuel_page_photo_btn_p,
-                            style: TextStyle(fontSize: 13, color: AppTheme.textSecondaryColor
+                            style: TextStyle(fontSize: 13, color: colorScheme.onSurfaceVariant
                           ),
                         ),
                       ],
@@ -99,12 +100,12 @@ class AddFuelPage extends StatelessWidget {
                       children: [
                         Text(
                           l10n.fuel_page_manual_btn_h,
-                          style: const TextStyle(fontSize: 17, fontWeight: FontWeight.bold, color: AppTheme.textColor
+                          style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold, color: colorScheme.onSurface
                         ),
                         ),
                         const SizedBox(height: 4),
                         Text(l10n.fuel_page_manual_btn_p, 
-                          style: TextStyle(fontSize: 13, color: AppTheme.textSecondaryColor
+                          style: TextStyle(fontSize: 13, color: colorScheme.onSurfaceVariant
                         ),
                       ),
                     ],

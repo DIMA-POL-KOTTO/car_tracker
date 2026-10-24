@@ -11,7 +11,9 @@ class EmptyCarCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Card(
+      color: colorScheme.surface,
       child: Padding(
         padding: const EdgeInsets.all(24.0),
         child: Column(
@@ -25,23 +27,23 @@ class EmptyCarCard extends StatelessWidget {
 
             const SizedBox(height: 16),
 
-            const Text(
+            Text(
               'Автомобиль не добавлен',
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
-                color: AppTheme.textColor,
+                color: colorScheme.onSurface,
               ),
             ),
 
             const SizedBox(height: 8),
 
-            const Text(
+            Text(
               'Добавьте автомобиль, чтобы начать отслеживать его состояние и заправки.',
               textAlign: TextAlign.center,
               style: TextStyle(
-                color: AppTheme.textSecondaryColor,
+                color: colorScheme.onSurfaceVariant,
               ),
             ),
 

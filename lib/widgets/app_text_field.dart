@@ -30,6 +30,7 @@ class AppTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return TextFormField(
       controller: controller,
       keyboardType: keyboardType,
@@ -39,16 +40,16 @@ class AppTextField extends StatelessWidget {
       onChanged: onChanged,
       minLines: minLines,
       maxLines: maxLines,
-      style: TextStyle(fontSize: 16, color: AppTheme.textColor),
+      style: TextStyle(fontSize: 16, color: colorScheme.onSurface),
       decoration: InputDecoration(
         hintText: hint,
-        hintStyle: const TextStyle(
+        hintStyle: TextStyle(
           fontSize: 14,
-          color: AppTheme.secondaryColor,
+          color: colorScheme.onSurfaceVariant,
         ),
         suffixText: suffix,
         filled: true,
-        fillColor: AppTheme.primaryColor.withValues(alpha: 0.04),
+        fillColor: colorScheme.surface,
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 16,
           vertical: 16,
