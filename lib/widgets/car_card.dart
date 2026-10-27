@@ -1,0 +1,160 @@
+import 'package:car_tracker/models/car.dart';
+import 'package:car_tracker/theme/app_theme.dart';
+import 'package:car_tracker/l10n/app_localizations.dart';
+import 'package:flutter/material.dart';
+import 'dart:io';
+
+class CarCard extends StatelessWidget {
+  final Car car;
+  final AppLocalizations l10n;
+  final Future<void> Function(int mileage) onUpdateMileage;
+  final VoidCallback onDelete;
+  final VoidCallback onUpdate;
+
+  const CarCard({super.key, required this.car, required this.l10n, required this.onUpdateMileage, required this.onDelete, required this.onUpdate});
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final colorScheme = Theme.of(context).colorScheme;
+    return Card(
+      color: colorScheme.surface,
+      margin: EdgeInsets.zero,
+      elevation: 1,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+        side: BorderSide(color: AppTheme.primaryColor.withValues(alpha: 0.12)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 8, 0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    car.name,
+                    style: TextStyle(
+                      fontSize: 20,
+                      color: colorScheme.onSurface,
+                    ),  
+                  ),
+                ),
+                PopupMenuButton<String>(
+                  onSelected: (value) {
+                    if (value == 'delete') {
+                      onDelete();
+                    }
+                    if (value == 'update') {
+                      onUpdate();
+                    }
+                  },
+                  itemBuilder: (context) => [
+                    PopupMenuItem(value: 'delete', child: Text(l10n.delete),),
+                    PopupMenuItem(value: 'update', child: Text(l10n.change),),
+                  ],
+                ),
+              ],
+            )
+          ),
+          if (car.imgPath != null)
+            Padding(
+              padding: const EdgeInsetsGeometry.fromLTRB(16, 0, 16, 0),
+              child: ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: Image.file(
+                File(car.imgPath!),
+                width: double.infinity,
+                height: 180,
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
+          Padding(padding: const EdgeInsets.symmetric(
+            horizontal: 16),
+            child: const Divider(height: 1),
+          ),
+          Padding(
+          padding: const EdgeInsets.all(16),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children:[
+              Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                l10n.fuel_mileage,
+                style: TextStyle(
+                  color: colorScheme.onSurfaceVariant,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                '${car.mileage} ${l10n.km}',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: colorScheme.onSurface,
+                ),
+              ),
+            ],
+          ),
+          TextButton(
+            onPressed: () => _showMileageDialog(context),
+            child: Text(l10n.update_btn,
+              style: const TextStyle(
+                color: AppTheme.primaryColor,
+                fontSize: 14
+              ),
+              
+            ),
+          ),    
+            ],
+          ),
+        ),
+        ],
+      ),
+    );
+  }
+
+  void _showMileageDialog(BuildContext context) {
+    final TextEditingController controller = TextEditingController(text: car.mileage.toString());
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(l10n.update_mileage),
+          content: TextField(
+            controller: controller,
+            keyboardType: TextInputType.number,
+            decoration: InputDecoration(
+              labelText: "${l10n.fuel_mileage} (${l10n.km})",
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(l10n.cancel),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                final int? newMileage = int.tryParse(controller.text);
+                if (newMileage != null) {
+                  await onUpdateMileage(newMileage);
+                  Navigator.pop(context);
+                } 
+              },
+              child: Text(l10n.save),
+            ),
+          ],
+        );
+      },
+    );
+  }
+  
+}
+
