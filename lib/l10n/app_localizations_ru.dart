@@ -338,4 +338,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get not_specified => 'Не указано';
+
+  @override
+  String get nearest_maintenance => 'Ближайшие обслуживания';
 }

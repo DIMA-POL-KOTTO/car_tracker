@@ -1,19 +1,19 @@
 import 'package:car_tracker/l10n/app_localizations.dart';
 import 'package:car_tracker/pages/maintenance_page/complete_maintenance.dart';
+import 'package:car_tracker/models/maintenance_reminder.dart';
 import 'package:car_tracker/services/car_manager.dart';
+import 'package:car_tracker/services/maintenance_manager.dart';
 import 'package:car_tracker/widgets/app_label.dart';
 import 'package:flutter/material.dart';
 import 'package:car_tracker/theme/app_theme.dart';
 import 'package:flutter/services.dart';
-import 'package:car_tracker/utils.dart';
-import 'package:car_tracker/services/maintenance_service.dart';
 import 'package:car_tracker/widgets/app_text_field.dart';
 import 'package:car_tracker/widgets/app_date_field.dart';
 import 'package:car_tracker/widgets/app_dropdown_field.dart';
 import 'package:car_tracker/models/maintenance_category.dart';
 
 class AddReminderPage extends StatefulWidget {
-  final Map<String, dynamic>? reminder;
+  final MaintenanceReminder? reminder;
 
   const AddReminderPage({super.key, this.reminder});
 
@@ -42,16 +42,14 @@ class _AddReminderPageState extends State<AddReminderPage> {
     super.initState();
     final reminder = widget.reminder;
     if (reminder != null) {
-      _titleController.text = reminder['title']?.toString() ?? '';
-      _category = MaintenanceCategory.fromLabel(
-        reminder['category']?.toString(),
-      );
-      _byMileage = reminder['reminderType'] == 'mileage';
-      _nextMileageController.text = reminder['dueM']?.toString() ?? '';
-      _intervalMileageController.text = reminder['intervalM']?.toString() ?? '';
-      _intervalMonthsController.text = reminder['intervalD']?.toString() ?? '';
-      _nextDate = _parseDate(reminder['dueD']?.toString());
-      _isRepeating = (reminder['isRepeating'] as int? ?? 0) == 1;
+      _titleController.text = reminder.title;
+      _category = reminder.category;
+      _byMileage = reminder.reminderType == ReminderType.mileage;
+      _nextMileageController.text = reminder.dueMileage?.toString() ?? '';
+      _intervalMileageController.text = reminder.intervalM?.toString() ?? '';
+      _intervalMonthsController.text = reminder.intervalD?.toString() ?? '';
+      _nextDate = reminder.dueDate;
+      _isRepeating = reminder.isRepeating;
     }
     _currentMileageController.addListener(_recalculateMileage);
     _intervalMileageController.addListener(_recalculateMileage);
@@ -60,21 +58,6 @@ class _AddReminderPageState extends State<AddReminderPage> {
       _recalculateDate();
     }
     _loadCurrentMileage();
-  }
-
-  DateTime? _parseDate(String? value) {
-    if (value == null) return null;
-    final parts = value.split('.');
-    if (parts.length != 3) return null;
-    final day = int.tryParse(parts[0]);
-    final month = int.tryParse(parts[1]);
-    final year = int.tryParse(parts[2]);
-    if (day == null || month == null || year == null) return null;
-    final date = DateTime(year, month, day);
-    if (date.year != year || date.month != month || date.day != day) {
-      return null;
-    }
-    return date;
   }
 
   Future<void> _loadCurrentMileage() async {
@@ -189,25 +172,32 @@ class _AddReminderPageState extends State<AddReminderPage> {
     }
     final car = carManager.cars.first;
     final existingReminder = widget.reminder;
-    final Map<String, dynamic> reminder = {
-      if (existingReminder?['id'] != null) 'id': existingReminder!['id'],
-      'carId': existingReminder?['carId'] ?? car.id,
-      'title': _titleController.text.trim(),
-      'category': _category!.label,
-      'reminderType': _byMileage ? 'mileage' : 'date',
-      'dueM': _isRepeating && _byMileage ? int.parse(_nextMileageController.text) : null,
-      'dueD': _isRepeating && !_byMileage ? formatDate(_nextDate!) : null,
-      'repeatByM': _isRepeating ? (existingReminder?['repeatByM'] ?? 0) : 0,
-      'intervalM': _isRepeating && _byMileage ? int.tryParse(_intervalMileageController.text) : null,
-      'repeatByD': _isRepeating ? (existingReminder?['repeatByD'] ?? 0) : 0,
-      'intervalD': _isRepeating && !_byMileage ? int.tryParse(_intervalMonthsController.text) : null,
-      'isRepeating': _isRepeating ? 1 : 0
-    };
+    final reminder = MaintenanceReminder(
+      id: existingReminder?.id,
+      carId: existingReminder?.carId ?? car.id!,
+      title: _titleController.text.trim(),
+      category: _category!,
+      reminderType:
+          _byMileage ? ReminderType.mileage : ReminderType.date,
+      dueMileage: _isRepeating && _byMileage
+          ? int.parse(_nextMileageController.text)
+          : null,
+      dueDate: _isRepeating && !_byMileage ? _nextDate : null,
+      repeatByM: existingReminder?.repeatByM ?? 0,
+      intervalM: _isRepeating && _byMileage
+          ? int.tryParse(_intervalMileageController.text)
+          : null,
+      repeatByD: existingReminder?.repeatByD ?? 0,
+      intervalD: _isRepeating && !_byMileage
+          ? int.tryParse(_intervalMonthsController.text)
+          : null,
+      isRepeating: _isRepeating,
+    );
     try {
       if (existingReminder == null) {
-        await MaintenanceReminderService.instance.insert(reminder);
+        await MaintenanceManager.instance.add(reminder);
       } else {
-        await MaintenanceReminderService.instance.update(reminder);
+        await MaintenanceManager.instance.update(reminder);
       }
       if (!mounted) return;
       ScaffoldMessenger.of(context)

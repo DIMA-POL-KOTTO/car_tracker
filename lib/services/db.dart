@@ -19,7 +19,7 @@ class DatabaseService {
     final path = join(databasesPath, 'car_care.db');
     return openDatabase(
       path,
-      version: 3,
+      version: 4,
       onConfigure: (db) async {
         await db.execute('PRAGMA foreign_keys = ON');
       },
@@ -103,6 +103,42 @@ class DatabaseService {
             SET isRepeating = 1
             WHERE intervalM IS NOT NULL OR intervalD IS NOT NULL
           ''');
+        }
+
+        if (oldVersion < 4) {
+          final reminders = await db.query(
+            'maintenance_reminders',
+            columns: ['id', 'dueD'],
+            where: 'dueD IS NOT NULL',
+          );
+
+          for (final reminder in reminders) {
+            final dueDate = reminder['dueD']?.toString();
+            if (dueDate == null || DateTime.tryParse(dueDate) != null) {
+              continue;
+            }
+
+            final parts = dueDate.split('.');
+            if (parts.length != 3) continue;
+            final day = int.tryParse(parts[0]);
+            final month = int.tryParse(parts[1]);
+            final year = int.tryParse(parts[2]);
+            if (day == null || month == null || year == null) continue;
+
+            final parsedDate = DateTime(year, month, day);
+            if (parsedDate.year != year ||
+                parsedDate.month != month ||
+                parsedDate.day != day) {
+              continue;
+            }
+
+            await db.update(
+              'maintenance_reminders',
+              {'dueD': parsedDate.toIso8601String()},
+              where: 'id = ?',
+              whereArgs: [reminder['id']],
+            );
+          }
         }
       },
       onDowngrade: onDatabaseDowngradeDelete,

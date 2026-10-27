@@ -107,5 +107,6 @@
     "next_maintenance": "Next maintenance",
     "history_details": "Completed maintenance",
     "maintenance_details": "Service details",
-    "not_specified": "Not specified"
+    "not_specified": "Not specified",
+    "nearest_maintenance": "Upcoming maintenance"
 }

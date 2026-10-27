@@ -751,6 +751,12 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Не указано'**
   String get not_specified;
+
+  /// No description provided for @nearest_maintenance.
+  ///
+  /// In ru, this message translates to:
+  /// **'Ближайшие обслуживания'**
+  String get nearest_maintenance;
 }
 
 class _AppLocalizationsDelegate

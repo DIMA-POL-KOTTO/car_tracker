@@ -1,6 +1,7 @@
 import 'package:car_tracker/l10n/app_localizations.dart';
+import 'package:car_tracker/models/maintenance_reminder.dart';
 import 'package:car_tracker/services/car_manager.dart';
-import 'package:car_tracker/services/maintenance_service.dart';
+import 'package:car_tracker/services/maintenance_manager.dart';
 import 'package:car_tracker/theme/app_theme.dart';
 import 'package:car_tracker/utils.dart';
 import 'package:car_tracker/widgets/app_section_heading.dart';
@@ -10,7 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class CompleteMaintenance extends StatefulWidget {
-  final Map<String, dynamic> reminder;
+  final MaintenanceReminder reminder;
 
   const CompleteMaintenance({super.key, required this.reminder});
 
@@ -48,9 +49,9 @@ class _CompleteMaintenanceState extends State<CompleteMaintenance> {
   Future<void> _completeMaintenance() async {
     if (_saving || !_formKey.currentState!.validate()) return;
 
-    final reminderId = widget.reminder['id'];
-    final carId = _carId ?? widget.reminder['carId'];
-    if (reminderId is! int || carId is! int) {
+    final reminderId = widget.reminder.id;
+    final carId = _carId ?? widget.reminder.carId;
+    if (reminderId is! int) {
       _showMessage('Не удалось определить автомобиль или напоминание');
       return;
     }
@@ -60,11 +61,11 @@ class _CompleteMaintenanceState extends State<CompleteMaintenance> {
     setState(() => _saving = true);
 
     try {
-      await MaintenanceReminderService.instance.completeReminder({
+      await MaintenanceManager.instance.completeReminder({
         'carId': carId,
         'reminderId': reminderId,
-        'title': widget.reminder['title'],
-        'category': widget.reminder['category'],
+        'title': widget.reminder.title,
+        'category': widget.reminder.category.label,
         'date': formatDate(DateTime.now()),
         'mileage': int.parse(_mileageController.text),
         'cost': cost,

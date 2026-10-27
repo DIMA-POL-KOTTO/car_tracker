@@ -1,10 +1,11 @@
 import 'package:car_tracker/l10n/app_localizations.dart';
+import 'package:car_tracker/models/maintenance_reminder.dart';
 import 'package:car_tracker/theme/app_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:car_tracker/models/maintenance_category.dart';
+import 'package:car_tracker/utils.dart';
 
 class ReminderCard extends StatelessWidget {
-  final Map<String, dynamic> reminder;
+  final MaintenanceReminder reminder;
   final VoidCallback? onTap;
   final Color? urgencyColor;
 
@@ -14,14 +15,11 @@ class ReminderCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final l10n = AppLocalizations.of(context)!;
-    final title = reminder['title']?.toString() ?? 'Техобслуживание';
-    final category = reminder['category']?.toString();
-    final maintenanceCategory = MaintenanceCategory.fromLabel(category);
-    final isMileageReminder = reminder['reminderType'] == 'mileage';
-    final dueMileage = reminder['dueM'];
-    final dueDate = reminder['dueD']?.toString();
+    final isMileageReminder = reminder.reminderType == ReminderType.mileage;
+    final dueMileage = reminder.dueMileage;
+    final dueDate = reminder.dueDate;
     final hasDueMileage = dueMileage != null;
-    final hasDueDate = dueDate != null && dueDate.isNotEmpty;
+    final hasDueDate = dueDate != null;
 
     return Card(
       color: Theme.of(context).colorScheme.surface,
@@ -46,12 +44,12 @@ class ReminderCard extends StatelessWidget {
                     width: 42,
                     height: 42,
                     decoration: BoxDecoration(
-                      color: maintenanceCategory.color.withValues(alpha: 0.12),
+                      color: reminder.category.color.withValues(alpha: 0.12),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Icon(
-                      maintenanceCategory.icon,
-                      color: maintenanceCategory.color,
+                      reminder.category.icon,
+                      color: reminder.category.color,
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -60,23 +58,21 @@ class ReminderCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          title,
+                          reminder.title,
                           style: TextStyle(
                             color: colorScheme.onSurface,
                             fontSize: 17,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        if (category != null && category.isNotEmpty) ...[
-                          const SizedBox(height: 4),
-                          Text(
-                            category,
-                            style: TextStyle(
-                              color: colorScheme.onSurfaceVariant,
-                              fontSize: 14,
-                            ),
+                        const SizedBox(height: 4),
+                        Text(
+                          reminder.category.label,
+                          style: TextStyle(
+                            color: colorScheme.onSurfaceVariant,
+                            fontSize: 14,
                           ),
-                        ],
+                        ),
                       ],
                     ),
                   ),
@@ -110,7 +106,7 @@ class ReminderCard extends StatelessWidget {
                       child: Text(
                         isMileageReminder
                             ? '${l10n.next_maintenance}: $dueMileage ${l10n.km}'
-                            : '${l10n.next_maintenance}: $dueDate',
+                            : '${l10n.next_maintenance}: ${formatDate(dueDate!)}',
                         style: TextStyle(
                           color: colorScheme.onSurfaceVariant,
                           fontSize: 14,

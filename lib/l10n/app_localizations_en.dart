@@ -338,4 +338,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get not_specified => 'Not specified';
+
+  @override
+  String get nearest_maintenance => 'Upcoming maintenance';
 }

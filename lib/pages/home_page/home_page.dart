@@ -1,14 +1,19 @@
 import 'package:car_tracker/pages/fuel_page/fuel_form.dart';
 import 'package:car_tracker/pages/home_page/add_car_page.dart';
+import 'package:car_tracker/pages/maintenance_page/add_reminder_page.dart';
 import 'package:car_tracker/services/car_manager.dart';
 import 'package:car_tracker/l10n/app_localizations.dart';
+import 'package:car_tracker/models/maintenance_reminder.dart';
+import 'package:car_tracker/services/maintenance_manager.dart';
 import 'package:car_tracker/widgets/app_section_heading.dart';
 import 'package:car_tracker/widgets/car_empty_card.dart';
 import 'package:flutter/material.dart';
 import 'package:car_tracker/models/car.dart';
 import 'package:car_tracker/widgets/car_card.dart';
 import 'package:car_tracker/widgets/fuel_card.dart';
+import 'package:car_tracker/widgets/reminder_card.dart';
 import 'package:car_tracker/services/fuel_manager.dart';
+import 'package:car_tracker/utils.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -20,6 +25,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final CarManager _carManager = CarManager.instance; //один на всё приложение
   final FuelManager _fuelManager = FuelManager.instance;
+  final MaintenanceManager _maintenanceManager = MaintenanceManager.instance;
 
   @override
   void initState() {
@@ -28,12 +34,15 @@ class _HomePageState extends State<HomePage> {
     _carManager.init();
     _fuelManager.addListener(_onFuelChanged);
     _fuelManager.init();
+    _maintenanceManager.addListener(_onMaintenanceChanged);
+    _maintenanceManager.init();
   }
 
   @override
   void dispose() {
     _carManager.removeListener(_onCarChanged);
     _fuelManager.removeListener(_onFuelChanged);
+    _maintenanceManager.removeListener(_onMaintenanceChanged);
     super.dispose();
   }
 
@@ -43,6 +52,10 @@ class _HomePageState extends State<HomePage> {
 
   void _onFuelChanged() {
     setState(() {});
+  }
+
+  void _onMaintenanceChanged() {
+    if (mounted) setState(() {});
   }
 
   @override
@@ -88,7 +101,9 @@ class _HomePageState extends State<HomePage> {
     children.addAll([
       const SizedBox(height: 16,),
       AppSectionHeading(title: l10n.last_refill),
-      _buildLastFuel(l10n)
+      _buildLastFuel(l10n),
+      const SizedBox(height: 16),
+      _buildUpcomingMaintenance(l10n),
     ]);
     return SingleChildScrollView(
       child: Column(
@@ -116,10 +131,54 @@ class _HomePageState extends State<HomePage> {
         ),
       );
     }
-
     return FuelCard(
       entry: _fuelManager.entries.first,
       onTap: () {Navigator.push(context, MaterialPageRoute(builder: (context) => FuelForm(entry: _fuelManager.entries.first, isEditing: true,)));},
+    );
+  }
+
+  Widget _buildUpcomingMaintenance(AppLocalizations l10n) {
+    final currentMileage = _carManager.cars.isEmpty
+        ? null
+        : _carManager.cars.first.mileage;
+    final overdueReminders = <MapEntry<MaintenanceReminder, Color>>[];
+    final upcomingReminders = <MapEntry<MaintenanceReminder, Color>>[];
+
+    for (final reminder in _maintenanceManager.reminders) {
+      final urgencyColor = maintenanceUrgencyColor(reminder, currentMileage);
+      final entry = MapEntry(reminder, urgencyColor);
+      if (urgencyColor == Colors.red) {
+        overdueReminders.add(entry);
+      } else if (urgencyColor == Colors.amber) {
+        upcomingReminders.add(entry);
+      }
+    }
+
+    final reminders = [...overdueReminders, ...upcomingReminders];
+    if (reminders.isEmpty) return const SizedBox.shrink();
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        AppSectionHeading(title: l10n.nearest_maintenance),
+        ...reminders.map(
+          (entry) => Padding(
+            padding: const EdgeInsets.only(bottom: 16),
+            child: ReminderCard(
+              reminder: entry.key,
+              urgencyColor: entry.value,
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => AddReminderPage(reminder: entry.key),
+                  ),
+                );
+              },
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

@@ -107,5 +107,6 @@
     "next_maintenance": "Следующее ТО",
     "history_details": "Выполненное ТО",
     "maintenance_details": "Сведения о выполнении",
-    "not_specified": "Не указано"
+    "not_specified": "Не указано",
+    "nearest_maintenance": "Ближайшие обслуживания"
 }
