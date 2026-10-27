@@ -329,4 +329,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get next_maintenance => 'Next maintenance';
+
+  @override
+  String get history_details => 'Completed maintenance';
+
+  @override
+  String get maintenance_details => 'Service details';
+
+  @override
+  String get not_specified => 'Not specified';
 }

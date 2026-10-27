@@ -3,6 +3,7 @@ import 'package:car_tracker/l10n/app_localizations.dart';
 import 'package:car_tracker/widgets/app_section_heading.dart';
 import 'package:flutter/material.dart';
 import 'package:car_tracker/pages/maintenance_page/add_reminder_page.dart';
+import 'package:car_tracker/pages/maintenance_page/history_maintenance.dart';
 import 'package:car_tracker/services/car_manager.dart';
 import 'package:car_tracker/services/maintenance_service.dart';
 import 'package:car_tracker/widgets/history_maintenance_card.dart';
@@ -221,9 +222,18 @@ class _MaintenancePageState extends State<MaintenancePage> {
               )
             : null,
         onLongPress: id is int ? () => _startHistorySelection(id) : null,
-        onTap: _isHistorySelectionMode && id is int
-            ? () => _toggleHistorySelection(id)
-            : null,
+        onTap: () {
+          if (_isHistorySelectionMode) {
+            if (id is int) _toggleHistorySelection(id);
+            return;
+          }
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => HistoryMaintenancePage(history: entry),
+            ),
+          );
+        },
       ),
     );
   }

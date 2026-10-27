@@ -733,6 +733,24 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Следующее ТО'**
   String get next_maintenance;
+
+  /// No description provided for @history_details.
+  ///
+  /// In ru, this message translates to:
+  /// **'Выполненное ТО'**
+  String get history_details;
+
+  /// No description provided for @maintenance_details.
+  ///
+  /// In ru, this message translates to:
+  /// **'Сведения о выполнении'**
+  String get maintenance_details;
+
+  /// No description provided for @not_specified.
+  ///
+  /// In ru, this message translates to:
+  /// **'Не указано'**
+  String get not_specified;
 }
 
 class _AppLocalizationsDelegate

@@ -329,4 +329,13 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get next_maintenance => 'Следующее ТО';
+
+  @override
+  String get history_details => 'Выполненное ТО';
+
+  @override
+  String get maintenance_details => 'Сведения о выполнении';
+
+  @override
+  String get not_specified => 'Не указано';
 }

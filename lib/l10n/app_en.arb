@@ -104,5 +104,8 @@
     "saving": "Saving...",
     "enter_a_valid_mileage": "Enter a valid mileage",
     "cost": "Cost",
-    "next_maintenance": "Next maintenance"
+    "next_maintenance": "Next maintenance",
+    "history_details": "Completed maintenance",
+    "maintenance_details": "Service details",
+    "not_specified": "Not specified"
 }

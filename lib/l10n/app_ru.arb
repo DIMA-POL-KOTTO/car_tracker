@@ -104,5 +104,8 @@
     "saving": "Сохранение...",
     "enter_a_valid_mileage": "Введите корректный пробег",
     "cost": "Стоимость",
-    "next_maintenance": "Следующее ТО"
+    "next_maintenance": "Следующее ТО",
+    "history_details": "Выполненное ТО",
+    "maintenance_details": "Сведения о выполнении",
+    "not_specified": "Не указано"
 }
